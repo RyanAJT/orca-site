@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en" data-type="a">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orca Agentics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;700&family=Geist+Mono:wght@400;500&family=Inter+Tight:wght@300;400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* One underwater world with a glowing Orca OS orb that moves between chapters. The information lives on glass panels in front of it. */
+:root{
+  --deep:#06141a; --abyss:#0A1419; --teal:#1D7F92; --ice:#A9E1EC; --mist:#9FB3C3; --foam:#F2F7F9;
+  --disp:"Geist",system-ui,sans-serif; --acc:"Instrument Serif",Georgia,serif; --monof:"Geist Mono",ui-monospace,monospace;
+  --tr:-.05em; --tt:none; --lh:.98; --accsz:1.06em;
+  --glass:rgba(9,32,40,.42); --edge:rgba(169,225,236,.15);
+  --ease:cubic-bezier(.16,1,.3,1); --gut:clamp(18px,3.4vw,48px);
+  color-scheme:dark;
+}
+[data-type="b"]{--disp:"Cormorant Garamond",Georgia,serif;--acc:"Cormorant Garamond",Georgia,serif;--monof:"IBM Plex Mono",monospace;--tr:-.01em;--tt:uppercase;--lh:.9;--accsz:1em}
+[data-type="c"]{--disp:"Inter Tight",system-ui,sans-serif;--monof:"IBM Plex Mono",monospace;--tr:-.055em}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--deep)}
+body{background:var(--deep);color:var(--foam);font-family:"Geist",system-ui,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:1px solid var(--ice);outline-offset:4px;border-radius:4px}
+#gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;background:linear-gradient(180deg,#1b5a66,#0b2a33 45%,var(--deep))}
+.veil{position:fixed;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(6,20,26,.45),rgba(6,20,26,0) 50%),linear-gradient(0deg,rgba(6,20,26,.5),rgba(6,20,26,0) 35%)}
+
+.mono{font-family:var(--monof);font-weight:500;font-size:11px;letter-spacing:.06em;text-transform:uppercase;line-height:1.5}
+.pill{display:inline-block;font-family:var(--monof);font-weight:500;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:5px 11px;border-radius:999px;background:var(--ice);color:var(--abyss)}
+.glass{background:linear-gradient(160deg,rgba(20,60,72,.5),var(--glass));border:1px solid var(--edge);border-radius:24px;
+  backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 30px 80px -40px rgba(0,0,0,.6)}
+
+.h{font-family:var(--disp);font-weight:300;letter-spacing:var(--tr);line-height:var(--lh);text-transform:var(--tt);color:var(--foam);text-wrap:balance;
+  transform:skewY(calc(var(--v,0) * .035deg));
+  text-shadow:calc(var(--v,0) * .07px) 0 rgba(169,225,236,.5),calc(var(--v,0) * -.07px) 0 rgba(29,127,146,.5)}
+.h em{font-family:var(--acc);font-style:italic;font-weight:400;letter-spacing:-.02em;font-size:var(--accsz);color:var(--ice);text-transform:none}
+.l{display:block;overflow:hidden;padding:.05em 0 .1em;margin:-.05em 0 -.1em}
+.l>span{display:inline-block}
+.js .l>span{transform:translateY(112%);transition:transform 1.3s var(--ease);transition-delay:calc(var(--i,0) * 90ms)}
+.js .in .l>span{transform:none}
+.js .fade{opacity:0;transform:translateY(18px);transition:opacity 1s var(--ease) .3s,transform 1.1s var(--ease) .3s}
+.js .in .fade{opacity:1;transform:none}
+
+.nav{position:fixed;top:0;left:0;right:0;z-index:20;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:22px var(--gut)}
+.nav nav{display:flex;gap:30px}
+.nav nav a{opacity:.78;transition:opacity .2s}.nav nav a:hover{opacity:1}
+.nav .r{display:flex;gap:18px;align-items:center;justify-content:flex-end}
+.talk{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:9px 16px;border-radius:999px;font-size:14px;font-weight:500;white-space:nowrap;
+  background:rgba(242,247,249,.1);border:1px solid rgba(242,247,249,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:background .3s,color .3s,transform .4s var(--ease)}
+.talk:hover{background:var(--foam);color:var(--abyss)}
+.talk:active{transform:scale(.97)}
+.talk.solid{background:var(--foam);color:var(--abyss);border-color:var(--foam);padding:14px 24px;font-size:15px}
+.talk.solid:hover{background:var(--ice)}
+/* ponytail: review-only type switcher, delete once a pairing is picked */
+.typer{padding:8px 12px;border-radius:999px;background:rgba(6,20,26,.6);border:1px solid rgba(169,225,236,.25)}
+.typer:hover{border-color:var(--ice)}
+
+main{position:relative;z-index:2}
+.ch{position:relative;min-height:170vh;padding:0 var(--gut)}
+.stick{position:sticky;top:0;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:110px 0 clamp(36px,6vh,64px)}
+.ch h2{font-size:clamp(2.6rem,5.4vw,5.6rem);max-width:11ch}
+.ch .pill{margin-bottom:20px;align-self:flex-start}
+.lede{color:var(--mist);max-width:42ch;margin-top:18px;font-size:15.5px}
+.split{display:grid;grid-template-columns:1fr minmax(0,1.15fr);gap:clamp(24px,5vw,80px);align-items:end}
+
+/* Hero */
+.hero .lead{max-width:300px;margin-bottom:clamp(28px,5vh,56px)}
+.hero h1{font-size:clamp(3rem,7vw,7.8rem)}
+.hero h1 .ind{padding-left:clamp(0px,16vw,260px)}
+.hstats{position:absolute;right:0;bottom:clamp(36px,6vh,64px);display:grid;grid-template-columns:1fr 1fr;gap:10px;width:310px}
+.hstats div{padding:14px 16px;border-radius:16px}
+.hstats b{display:block;font-family:var(--disp);font-weight:300;font-size:28px;letter-spacing:-.04em;line-height:1.1}
+.hstats span{color:var(--mist);font-size:10px}
+
+/* OS hub */
+.hub{padding:18px;aspect-ratio:520/440}
+.hub svg{width:100%;height:100%;display:block;overflow:visible}
+.flow{stroke:rgba(169,225,236,.7);stroke-width:1.6;stroke-dasharray:3 8;animation:flow 1.1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-22}}
+.node circle{fill:rgba(8,28,35,.85);stroke:rgba(169,225,236,.35);stroke-width:1.2;animation:ping 6s infinite}
+@keyframes ping{0%,10%{stroke:var(--ice);stroke-width:2}20%,100%{stroke:rgba(169,225,236,.35);stroke-width:1.2}}
+.node g{color:var(--ice)}
+.node text,.chart text{fill:var(--mist);font-family:var(--monof);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase}
+.core{fill:url(#cg);stroke:rgba(169,225,236,.6);stroke-width:1.2}
+
+/* Growth chart */
+.chart{padding:22px 22px 12px}
+.chart svg{width:100%;display:block;overflow:visible}
+.grow{fill:none;stroke:var(--ice);stroke-width:2.4;stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 2.4s var(--ease) .4s}
+.in .grow{stroke-dashoffset:0}
+.area{fill:url(#ag);opacity:0;transition:opacity 1.6s ease 1.2s}
+.in .area{opacity:1}
+.chart .ms{opacity:0;transition:opacity .6s ease}
+.in .chart .ms{opacity:1}
+.chart .val{fill:var(--foam);font-family:var(--disp);font-size:13px;letter-spacing:0;text-transform:none}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);margin-top:28px;border-top:1px solid rgba(169,225,236,.16)}
+.steps div{padding:14px 18px 0 0}
+.steps b{display:block;font-weight:400;font-size:18px;letter-spacing:-.02em;margin:6px 0 4px}
+.steps p{font-size:13.5px;color:var(--mist);max-width:24ch}
+
+/* Channels */
+.chan{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;padding:14px}
+.tile{display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px 6px 12px;border-radius:14px;border:1px solid rgba(169,225,236,.1);color:var(--ice);
+  background:rgba(6,20,26,.35);animation:lit 7s infinite;animation-delay:calc(var(--i) * .5s);transition:transform .4s var(--ease)}
+.tile:hover{transform:translateY(-3px);border-color:var(--ice)}
+.tile span{font-family:var(--monof);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--mist);text-align:center}
+@keyframes lit{0%,6%{background:rgba(169,225,236,.2);border-color:rgba(169,225,236,.7)}14%,100%{background:rgba(6,20,26,.35);border-color:rgba(169,225,236,.1)}}
+
+/* Difference */
+.vs2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:34px;max-width:1100px}
+.card{padding:28px}
+.card .top{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.badge{position:relative;width:58px;height:58px;border-radius:16px;display:grid;place-items:center;background:rgba(6,20,26,.5);border:1px solid var(--edge);color:var(--mist)}
+.badge i{position:absolute;right:-8px;bottom:-8px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-style:normal}
+.card h3{font-weight:400;font-size:20px;letter-spacing:-.02em}
+.card .row{display:grid;grid-template-columns:86px 1fr;gap:12px;padding:12px 0;border-top:1px solid rgba(169,225,236,.12);font-size:15px}
+.card.old{opacity:.8}
+.card.old .row span:last-child{color:var(--mist);text-decoration:line-through;text-decoration-color:rgba(159,179,195,.45)}
+.card.old .badge i{background:#2a3b42;color:var(--mist)}
+.card.new{border-color:rgba(169,225,236,.45);box-shadow:0 0 0 1px rgba(169,225,236,.1),0 30px 90px -30px rgba(169,225,236,.35)}
+.card.new .badge{color:var(--foam);border-color:rgba(169,225,236,.5)}
+.card.new .badge i{background:var(--ice);color:var(--abyss)}
+
+/* Proof */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
+.stat{padding:26px}
+.stat .big{display:block;font-family:var(--disp);font-weight:300;font-size:clamp(2.6rem,4.4vw,4.4rem);letter-spacing:-.055em;line-height:1;font-variant-numeric:tabular-nums}
+.stat p{color:var(--mist);font-size:14.5px;margin-top:12px;max-width:30ch}
+.stat .mono{display:block;margin-top:16px;color:var(--ice)}
+
+/* Plans (cards, Scale is the hero) */
+.plans .stick{justify-content:center}
+.plans h2{max-width:none;font-size:clamp(2.2rem,3.6vw,3.6rem)}
+.plans .stick{padding-top:96px}
+.tiers{display:grid;grid-template-columns:1fr 1.18fr 1fr;gap:16px;align-items:center;margin-top:34px;max-width:1240px}
+.tier{display:flex;flex-direction:column;gap:14px;padding:30px;border-radius:28px;background:rgba(6,20,26,.55);border:1px solid rgba(169,225,236,.16);
+  backdrop-filter:blur(20px) saturate(140%);-webkit-backdrop-filter:blur(20px) saturate(140%);transition:transform .6s var(--ease),border-color .4s}
+.tier:hover{transform:translateY(-4px);border-color:rgba(169,225,236,.35)}
+.tier h3{font-family:var(--disp);font-weight:300;font-size:clamp(1.5rem,2vw,1.9rem);letter-spacing:var(--tr);text-transform:var(--tt)}
+.tier .for{color:var(--mist);font-size:14.5px;margin-top:-8px}
+.price{font-family:var(--disp);font-weight:300;font-size:clamp(2.6rem,3.6vw,3.6rem);letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums;margin-top:10px}
+.price small{font-size:.32em;letter-spacing:0;color:var(--mist);margin-left:4px}
+.note{color:var(--mist);margin-top:-6px}
+.tier ul{list-style:none;display:grid;gap:9px;padding:16px 0;border-top:1px solid rgba(169,225,236,.14);font-size:14.5px;flex:1}
+.tier li{display:flex;gap:10px;align-items:baseline}
+.tier li::before{content:"";flex:none;width:12px;height:7px;border-left:1.6px solid var(--ice);border-bottom:1.6px solid var(--ice);transform:rotate(-45deg) translateY(-3px)}
+.tier li:has(b)::before{display:none}
+.tier li b{font-weight:500}
+.tier .talk{justify-content:center}
+.tier.hot{padding:38px 34px;background:linear-gradient(160deg,#e9f8fa,#a9e1ec);color:var(--abyss);border:0;box-shadow:0 40px 90px -30px rgba(169,225,236,.45),inset 0 1px 0 rgba(255,255,255,.8)}
+.tier.hot:hover{transform:translateY(-6px)}
+.tier.hot .top{display:flex;justify-content:space-between;align-items:center}
+.tier.hot .pill{background:var(--abyss);color:var(--ice)}
+.tier.hot .for,.tier.hot .note,.tier.hot .price small{color:#24525f}
+.tier.hot ul{border-color:rgba(10,20,25,.15)}
+.tier.hot li::before{border-color:var(--teal)}
+.tier.hot .talk.solid{background:var(--abyss);color:var(--foam);border-color:var(--abyss)}
+.tier.hot .talk.solid:hover{background:var(--teal)}
+.tfoot{display:flex;flex-wrap:wrap;gap:8px 26px;margin-top:22px;color:var(--mist)}
+
+/* Close */
+.close .stick{justify-content:flex-end;align-items:center;text-align:center}
+.close h2{max-width:13ch;margin:0 auto}
+.close .cta{display:flex;gap:12px;justify-content:center;margin-top:36px;flex-wrap:wrap}
+.close .mono{margin-top:22px;color:var(--mist)}
+footer{position:relative;z-index:2;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:26px var(--gut);border-top:1px solid rgba(169,225,236,.14);background:rgba(6,20,26,.6);backdrop-filter:blur(10px)}
+
+@media (max-width:1180px){.hstats{display:none}}
+@media (max-width:900px){
+  .nav nav,.nav .clock,.typer{display:none}
+  .nav{grid-template-columns:1fr auto;padding:14px 16px}
+  .nav .talk{padding:8px 14px;font-size:13px}
+  .ch{min-height:auto}
+  .stick{position:relative;min-height:100vh;padding-top:40vh}
+  .plans .stick{padding-top:110px}
+  .split,.vs2,.stats{grid-template-columns:1fr}
+  .hero h1 .ind{padding-left:0}
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .chan{grid-template-columns:repeat(4,1fr)}
+  .tiers{grid-template-columns:1fr}
+  .tier.hot{order:-1}
+  .veil{background:linear-gradient(0deg,rgba(6,20,26,.85) 0%,rgba(6,20,26,.65) 50%,rgba(6,20,26,0) 68%)}
+}
+@media (prefers-reduced-motion:reduce){
+  .js .l>span,.js .fade{transform:none;opacity:1;transition:none}
+  .h{transform:none;text-shadow:none}
+  .flow,.node circle,.tile{animation:none}
+  .grow{stroke-dashoffset:0}.area,.chart .ms{opacity:1}
+}
+</style>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas>
+<div class="veil"></div>
+
+<header class="nav">
+  <a href="#top" id="logo" aria-label="Orca Agentics, back to top"></a>
+  <nav class="mono" aria-label="Main"><a href="#os">The OS</a><a href="#loop">Timeline</a><a href="#proof">Proof</a><a href="#plans">Plans</a></nav>
+  <div class="r">
+    <button class="typer mono" data-typer>Type A · Geist</button>
+    <span class="mono clock">KL <span data-clock>--:--</span></span>
+    <a class="talk" href="https://instagram.com/orca.agentics">Let's talk <span aria-hidden="true">&#8627;</span></a>
+  </div>
+</header>
+
+<main>
+  <section class="ch hero" id="top">
+    <div class="stick">
+      <p class="mono lead fade">The operating system that replaces the marketing team. At only a fraction of the cost.</p>
+      <h1 class="h">
+        <span class="l"><span style="--i:0"><em>Acquire,</em></span></span>
+        <span class="l ind"><span style="--i:1">Engage &amp; Convert</span></span>
+        <span class="l ind"><span style="--i:2">Audiences Autonomously.</span></span>
+      </h1>
+    </div>
+  </section>
+
+  <section class="ch" id="os">
+    <div class="stick">
+      <div class="split">
+        <div>
+          <span class="pill fade">The OS</span>
+          <h2 class="h"><span class="l"><span style="--i:0"><em>One</em> operating</span></span><span class="l"><span style="--i:1">system for every</span></span><span class="l"><span style="--i:2">channel.</span></span></h2>
+          <p class="lede fade">Done for you, end to end. We research, create, post, reply and book the leads. You set the direction and approve.</p>
+        </div>
+        <div class="hub glass fade" data-hub></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch" id="loop">
+    <div class="stick">
+      <div class="split">
+        <div>
+          <span class="pill fade">Timeline</span>
+          <h2 class="h"><span class="l"><span style="--i:0">Research <em>to</em></span></span><span class="l"><span style="--i:1">revenue.</span></span></h2>
+        </div>
+        <div class="chart glass fade" data-chart></div>
+      </div>
+      <div class="steps mono fade">
+        <div>Week 1<b>Live</b><p>We map your business, write your brand book and go live within a week.</p></div>
+        <div>Month 1<b>Every day</b><p>Content on every channel. Every DM answered, leads start booking.</p></div>
+        <div>Month 3<b>Momentum</b><p>The strategy knows what works. Animas hit 2,000 subscribers here.</p></div>
+        <div>Month 6<b>Scale</b><p>Trader Hub reached 8,000+ members and $120K+ by month six.</p></div>
+        <div>Beyond<b>Compounds</b><p>Most strategies decay. This one keeps learning.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch" id="reach">
+    <div class="stick">
+      <div class="split">
+        <div>
+          <span class="pill fade">Channels</span>
+          <h2 class="h"><span class="l"><span style="--i:0"><em>Found</em> wherever</span></span><span class="l"><span style="--i:1">your audience</span></span><span class="l"><span style="--i:2">looks.</span></span></h2>
+          <p class="lede fade">We run it on every channel your customers use, and get you recommended in the answers people get from ChatGPT, Gemini and Perplexity.</p>
+        </div>
+        <div class="chan glass fade" data-chan></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch" id="vs">
+    <div class="stick">
+      <span class="pill fade">The difference</span>
+      <h2 class="h" style="max-width:none"><span class="l"><span style="--i:0">Replace the team, <em>not</em> the results.</span></span></h2>
+      <div class="vs2 fade">
+        <article class="card glass old">
+          <div class="top"><span class="badge" data-icon="team"><i>&#10005;</i></span><h3>The usual way</h3></div>
+          <div class="row"><span class="mono">Cost</span><span>Salaries, tools and agency retainers</span></div>
+          <div class="row"><span class="mono">Output</span><span>A few posts a week</span></div>
+          <div class="row"><span class="mono">Strategy</span><span>Set once a quarter, then it fades</span></div>
+          <div class="row"><span class="mono">Leads</span><span>Answered when someone is free</span></div>
+        </article>
+        <article class="card glass new">
+          <div class="top"><span class="badge" data-orca><i>&#10003;</i></span><h3>With Orca</h3></div>
+          <div class="row"><span class="mono">Cost</span><span>One plan, from $2,000 a month</span></div>
+          <div class="row"><span class="mono">Output</span><span>Content every day, on every channel</span></div>
+          <div class="row"><span class="mono">Strategy</span><span>Rebuilt every week from what's working</span></div>
+          <div class="row"><span class="mono">Leads</span><span>Every message answered in seconds, leads booked</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch" id="proof">
+    <div class="stick">
+      <span class="pill fade">Proof</span>
+      <h2 class="h"><span class="l"><span style="--i:0">Results, <em>not</em></span></span><span class="l"><span style="--i:1">promises.</span></span></h2>
+      <div class="stats fade">
+        <div class="stat glass"><span class="big" data-count="8000" data-suf="+">8,000+</span><p>members and $120K+ in six months, grown by Liam, an AI influencer who posts every day.</p><span class="mono">Trader Hub</span></div>
+        <div class="stat glass"><span class="big" data-count="2000">2,000</span><p>subscribers in three months, from the very first post.</p><span class="mono">Animas</span></div>
+        <div class="stat glass"><span class="big" data-count="50" data-suf="M+">50M+</span><p>views and $450K+ in sales across 10+ brands we've grown.*</p><span class="mono">Incl. Jade Watches product films</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch plans" id="plans">
+    <div class="stick">
+      <span class="pill fade">Plans · USD</span>
+      <h2 class="h"><span class="l"><span style="--i:0">Pick <em>your</em> plan.</span></span></h2>
+      <div class="tiers fade">
+        <article class="tier">
+          <h3>Launch</h3><p class="for">Get the engine running.</p>
+          <div class="price">$2,000<small>/mo</small></div><p class="note mono">$1,600/mo on a 1-year contract</p>
+          <ul><li>Posts, reels and AI video every week</li><li>GEO audit and fixes</li><li>Comment-to-DM lead capture</li></ul>
+          <a class="talk" href="https://instagram.com/orca.agentics">Start with Launch</a>
+        </article>
+        <article class="tier hot">
+          <div class="top"><h3>Scale</h3><span class="pill">Most popular</span></div><p class="for">Your whole marketing team, replaced.</p>
+          <div class="price">$5,000<small>/mo</small></div><p class="note mono">$4,000/mo on a 1-year contract</p>
+          <ul><li><b>Everything in Launch, plus</b></li><li>Content every day, on every channel</li><li>Your own AI influencer</li><li>WhatsApp agent and bookings</li><li>Monthly AI search tracking</li><li>Live performance dashboard</li></ul>
+          <a class="talk solid" href="https://instagram.com/orca.agentics">Go Scale <span aria-hidden="true">&#8627;</span></a>
+        </article>
+        <article class="tier">
+          <h3>Own the system</h3><p class="for">Keep the whole framework in-house.</p>
+          <div class="price">$12,000<small> one-time</small></div><p class="note mono">+ $800/mo upkeep</p>
+          <ul><li>Everything in Scale</li><li>Full framework built and handed over</li><li>Training for your team</li></ul>
+          <a class="talk" href="https://instagram.com/orca.agentics">Book a build call</a>
+        </article>
+      </div>
+      <div class="tfoot mono fade"><span>AI tools from $400/mo on every plan</span><span>Websites from RM800</span><span>Custom packages priced to need</span></div>
+    </div>
+  </section>
+
+  <section class="ch close" id="talk">
+    <div class="stick">
+      <h2 class="h"><span class="l"><span style="--i:0">Let's build <em>your</em></span></span><span class="l"><span style="--i:1">operating system.</span></span></h2>
+      <div class="cta fade">
+        <a class="talk solid" href="https://instagram.com/orca.agentics">Send us a DM <span aria-hidden="true">&#8627;</span></a>
+        <a class="talk" href="mailto:orcaagentics@gmail.com">Email us</a>
+      </div>
+      <p class="mono fade">orcaagentics@gmail.com · @orca.agentics</p>
+    </div>
+  </section>
+</main>
+
+<footer class="mono">
+  <span>© 2026 Orca Agentics</span>
+  <span>Kuala Lumpur · GMT+8 · <span data-clock>--:--</span></span>
+  <a href="https://instagram.com/orca.agentics">Instagram</a>
+  <span>*Totals across the brands we've grown</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from 'three';
+const root=document.documentElement; root.classList.add('js');
+const $=s=>document.querySelector(s);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const rand=(a,b)=>a+Math.random()*(b-a), clamp=x=>Math.min(1,Math.max(0,x)), sm=x=>x*x*(3-2*x);
+
+/* Real ORCΛ logo paths */
+const SYM='M375.8 168.7l.9 11.5 .2 7.4 -.1 6.6 -.8 12.3 -1.6 12.2 -1.1 6.5 -1.2 5.6 -3.2 12 -2 6.2 -2.2 6.2 -2.8 6.9 -2.2 5 -10.7 4.9 -11.4 4.5 -11.6 4.1 -27.8 9 -15.1 5.6 -6.3 2.6 -6.9 3.1 -6.1 3 -5.9 3.3 -5.8 3.5 -5.7 3.7 -6.2 4.3 -6.7 5.1 -5.3 4.3 -7 6 -20.6 18.5 -9.3 8.1 -10.1 8.1 -10.2 7.3 -5.5-.6 -7.3-1.1 -6.5-1.1 -6.5-1.4 -11.1-3 -6.2-2 -6.2-2.2 -11.4-4.8 -6.7-3.2 -5.8-3 -10.6-6.3 -9.7-6.6 10.6-3.6 10-3.7 7.8-3.2 8.2-3.7 7.4-3.8 7.8-4.6 8.3-5.3 6.1-4.4 6.7 2.3 6 1.7 7 1.6 6.7 1.2 7.2 .8 7.8 .4 7.2 0 7.3-.4 7.2-.8 6.6-1.2 7.7-1.7 6.4-1.9 6.3-2.2 6.8-2.8 6.5-3.1 5.9-3.3 6.2-3.8 6.4-4.5 4.8-3.8 5.4-4.8 5.6-5.6 4.5-4.9 4.9-6.1 3.6-5 3.9-6.2 3.5-6.3 3.2-6.5 2.5-5.7 2.3-6.3 2.1-6.9 1.5-6 1.4-7 8.2-3.7 7.4-3.8 7.8-4.6 7-4.5 6.8-4.8 7.2-5.5 8.3-6.9 8.3-7.3zM96.4 24l10.2-5.3 9-4 10.7-4.2 9.4-3 11.1-2.9 9.7-1.9 9.8-1.4 11.5-1 9.8-.3 10.7 .3 11.5 .9 10.6 1.5 10.4 2.1 10.4 2.7 10.9 3.6 10 3.9 9.7 4.4 10.1 5.4 9.2 5.6 8.8 6.1 8.4 6.5 7.5 6.5 7.6 7.4 7.8 8.5 7.2 9 5.8 8 5.8 9 4.8 8.6 5.1 10.3 3.9 9.1 3.9 10.8 3 10.2 -17.4 15.5 -6.5 5.3 -5.4 4.2 -5.5 4.1 -6.9 4.6 -6.4 3.9 -6.2 3.5 -.7-8.1 -1.3-8.3 -1.6-7.7 -2.3-8 -2.8-7.9 -3.1-7.2 -4.1-8 -4-6.7 -4.4-6.5 -5.1-6.6 -5.2-5.9 -6.4-6.3 -5.9-5.1 -5.7-4.4 -6-4.1 -8.2-4.9 -7.5-3.7 -7.7-3.3 -8-2.7 -7-2 -7.6-1.7 -8.3-1.2 -8.3-.7 -8.4-.2 -7.9 .3 -8.8 1 -7.8 1.4 -7.6 1.8 -8 2.5 -8.3 3.2 -7.6 3.5 -6.9 3.7 -7.6 4.8 -5.9 4.3 -6.5 5.3 -5.7 5.3 -5.4 5.7 -5 6 -5.3 7.2 -4.2 6.6 -3.3 5.9 -3.6 7.5 -3.4 8.3 -2.4 7.4 -2 7.6 -1.5 7.7 -1.3 9.4 -.5 8.4 .1 8.4 .6 8.3 1.2 8.3 1.4 7.2 2 7.5 2.6 8 3.2 7.8 3.4 7 4.1 7.3 4.6 7 4.7 6.3 5.4 6.4 5.8 6 5.8 5.3 6.1 4.9 7.1 5 -6 3.6 -6.7 3.6 -6.1 3 -7.6 3.4 -7 2.9 -9.4 3.4 -19.8 6.6 -8-8.4 -6.3-7.5 -6.5-8.5 -6.4-9.6 -5.8-9.9 -4.8-9.6 -4.6-10.5 -3.4-9.3 -3.4-11 -2.5-10.4 -1.8-9.7 -1.4-11.4 -.7-9.8 -.2-12.4 .3-5.7 .4-6.6 1.1-9.8 1.8-10.5 2.4-10.4 3.2-11.1 3.9-10.8 4.6-10.6 4.7-9.6 5.4-9.2 5.3-8.3 5.8-8 7.3-8.9 7.3-7.9 7.6-7.4 8.1-7 7.8-6 9.5-6.5z', TXT='M1095.1 20.2l6.7 .2 6.5 .3 6.4 .4 6.3 .6 6.2 .6 6 .8 6 .8 5.8 1 5.7 1.2 5.6 1.2 5.5 1.3 5.4 1.5 5.3 1.6 5.1 1.7 5 1.8 4.9 1.9 4.8 2 4.6 2.2 4.6 2.2 4.3 2.3 4.3 2.4 4.1 2.6 4 2.6 3.8 2.7 3.8 2.8 3.6 2.9 3.4 3.1 3.4 3.1 3.2 3.2 3 3.3 3 3.4 2.8 3.6 2.6 3.6 2.5 3.7 2.4 3.8 2.2 3.8 2.1 4 1.9 4.1 1.7 4.1 1.6 4.3 1.5 4.3 1.3 4.5 1.2 4.5 1 4.6 .9 4.7 .7 4.8 .6 4.9 -66 0 -.9-2.6 -.9-2.6 -3.1-7.4 -1.2-2.4 -1.3-2.3 -1.3-2.3 -1.4-2.2 -4.6-6.5 -1.7-2 -1.7-2.1 -1.8-1.9 -1.9-2 -1.9-1.8 -2-1.9 -2.1-1.7 -2.1-1.7 -2.3-1.7 -2.2-1.6 -2.4-1.5 -2.4-1.5 -7.7-4.1 -2.7-1.3 -2.7-1.2 -8.7-3.2 -3.1-1 -3.1-.9 -3.1-.8 -3.3-.8 -10.1-2 -3.6-.5 -3.6-.5 -3.6-.4 -3.8-.3 -3.8-.3 -3.9-.2 -3.9-.2 -4-.1 -14.2 .2 -4.9 .2 -4.9 .4 -4.8 .4 -4.7 .6 -4.6 .6 -4.5 .8 -4.5 .8 -4.4 1 -4.3 1 -4.2 1.2 -4.1 1.2 -4.1 1.3 -4 1.5 -3.9 1.5 -3.8 1.7 -3.8 1.7 -3.6 1.8 -3.4 2 -3.4 2 -3.3 2.1 -3.2 2.2 -3 2.3 -3 2.4 -2.8 2.5 -2.7 2.5 -2.6 2.7 -2.6 2.8 -2.3 2.8 -2.3 3 -2.2 3 -2.1 3.2 -1.9 3.2 -1.8 3.3 -1.7 3.5 -1.5 3.5 -1.4 3.6 -1.2 3.6 -1.2 3.8 -1 3.9 -.8 4 -.8 4 -.6 4.2 -.4 4.2 -.4 4.3 -.2 4.5 0 4.5 0 4.4 .2 4.4 .4 4.3 .4 4.2 .6 4.1 .8 4 .8 3.9 1 3.8 1.2 3.8 1.2 3.6 1.4 3.6 1.5 3.4 1.7 3.4 1.8 3.3 1.9 3.2 2.1 3.1 2.2 3 2.3 2.9 2.3 2.9 2.6 2.7 2.6 2.7 2.7 2.5 2.8 2.5 3 2.3 3 2.3 3.2 2.2 3.3 2.1 3.4 2 3.4 1.9 3.6 1.9 3.8 1.7 3.8 1.6 3.9 1.6 4 1.4 4.1 1.4 4.1 1.2 4.2 1.2 4.3 1 4.4 1 4.5 .8 4.5 .7 4.6 .7 4.7 .5 4.8 .5 4.9 .3 4.9 .3 5 .1 13.2 0 11.6-.7 11-1.2 10.3-1.8 9.6-2.3 9.1-2.9 8.4-3.5 7.8-3.8 7.2-4.4 6.6-4.9 6-5.4 5.5-5.8 4.8-6.2 4.3-6.5 3.7-6.8 1.1-2.4 1-2.4 1-2.4 .9-2.5 66 0 -.7 4.8 -.7 4.8 -1 4.6 -1 4.6 -1.2 4.4 -1.4 4.4 -1.5 4.3 -1.6 4.2 -1.8 4.1 -2 4 -2 4 -2.3 3.8 -2.3 3.8 -2.6 3.6 -2.6 3.6 -2.8 3.5 -3 3.4 -3 3.3 -3.2 3.1 -3.4 3.1 -3.4 3 -3.6 2.9 -3.7 2.8 -3.8 2.6 -4 2.6 -4.1 2.5 -4.2 2.4 -4.4 2.2 -4.5 2.2 -4.6 2.1 -4.7 1.9 -4.9 1.9 -5 1.7 -5.1 1.7 -5.3 1.5 -5.3 1.4 -5.5 1.3 -5.6 1.2 -5.7 1.1 -5.8 1 -5.9 .8 -6.1 .7 -6.1 .7 -6.3 .5 -6.4 .4 -6.5 .3 -6.7 .1 -6.7 .1 -5.7-.1 -5.6-.1 -5.5-.2 -5.5-.3 -5.4-.3 -5.4-.5 -5.3-.5 -5.2-.6 -5.2-.7 -15.1-2.6 -4.9-1 -4.9-1.2 -4.8-1.1 -4.8-1.3 -4.6-1.4 -4.6-1.4 -4.6-1.5 -4.4-1.6 -4.3-1.7 -4.3-1.8 -4.2-1.8 -4.1-1.9 -4-2 -4-2.1 -3.8-2.2 -3.8-2.3 -3.7-2.3 -3.6-2.4 -3.5-2.5 -3.5-2.6 -3.3-2.7 -3.3-2.7 -3.2-2.8 -3-2.9 -3-3 -2.9-3.1 -2.8-3.1 -2.7-3.3 -2.5-3.3 -2.5-3.4 -2.4-3.4 -2.4-3.6 -2.2-3.6 -2.1-3.7 -2-3.8 -1.9-3.9 -1.8-3.9 -1.7-4 -1.6-4.2 -1.5-4.2 -1.3-4.2 -1.3-4.4 -1.1-4.5 -1-4.5 -.8-4.6 -.8-4.7 -.7-4.8 -.5-4.9 -.4-4.9 -.3-5.1 -.2-5.1 0-5.2 0-5.2 .2-5.1 .3-5.1 .4-5 .5-4.8 .7-4.8 .8-4.8 .8-4.6 1-4.5 1.1-4.5 1.3-4.4 1.3-4.3 1.5-4.2 1.6-4.2 1.7-4 1.8-4 1.9-3.9 2-3.8 2.1-3.8 2.2-3.6 2.4-3.6 2.4-3.5 2.5-3.4 2.5-3.3 2.7-3.3 2.8-3.2 2.9-3.1 3-3 3-2.9 3.2-2.9 3.3-2.8 3.3-2.7 3.5-2.6 3.5-2.5 3.6-2.5 3.7-2.3 3.8-2.3 3.8-2.2 4-2.1 4-2.1 4.1-1.9 4.2-1.9 4.3-1.8 4.3-1.7 4.4-1.7 4.6-1.5 4.6-1.5 4.6-1.4 4.8-1.3 4.8-1.2 4.9-1.1 4.9-1.1 5-.9 5-.9 5.1-.8 15.7-1.9 5.4-.5 5.4-.3 5.5-.3 5.5-.2 5.6-.2 5.7 0zM686 26.7l4.6 .2 4.5 .2 13 1 4.2 .5 4.1 .6 11.9 2.3 3.8 1 3.8 1 10.7 3.4 3.4 1.4 3.4 1.4 3.2 1.5 3.1 1.6 3.1 1.7 2.9 1.7 2.9 1.9 2.7 2 2.7 2 2.5 2.1 2.5 2.3 2.4 2.3 2.2 2.4 2.2 2.5 2.1 2.6 2 2.6 1.9 2.8 1.7 2.9 1.6 2.9 1.6 3.1 1.4 3.1 1.2 3.3 1.2 3.3 1 3.5 .9 3.5 .8 3.6 .7 3.7 .5 3.9 .4 3.9 .3 4 .2 4.1 .1 4.2 0 2.8 -.1 2.8 -.2 2.8 -.2 2.7 -.3 2.6 -.3 2.6 -.4 2.5 -.5 2.4 -.5 2.4 -.6 2.4 -.7 2.3 -.7 2.2 -.8 2.2 -.8 2.2 -.9 2.1 -1 2 -1 2 -1.1 1.9 -1.1 1.9 -1.2 1.8 -1.2 1.8 -1.3 1.7 -1.3 1.7 -1.4 1.7 -1.4 1.6 -1.5 1.5 -1.5 1.6 -1.5 1.4 -1.6 1.4 -1.7 1.4 -1.7 1.3 -1.8 1.3 -1.8 1.2 -5.6 3.5 -7.9 4.1 -2 .9 -2.1 .9 -6.5 2.5 -2.3 .8 -2.2 .7 -7 1.9 -7.1 1.7 -6.3 1.2 13.8 1.5 3.3 .5 3.1 .5 3.1 .6 2.9 .6 8.3 2.1 2.6 .8 2.5 .9 2.4 1 2.4 1 2.2 1.1 2.2 1.1 2 1.2 2 1.3 1.9 1.4 1.8 1.4 1.7 1.5 1.6 1.5 1.6 1.7 1.4 1.6 1.4 1.8 1.3 1.9 1.2 2 1 2 1.1 2.2 .9 2.3 .8 2.4 .8 2.5 .6 2.6 .6 2.7 .5 2.8 .9 9 .1 3.3 .1 3.3 0 77 -66.5 0 0-72.5 -.3-6.7 -.6-6 -1.2-5.5 -1.6-4.9 -.6-1.5 -.7-1.5 -.7-1.3 -.8-1.4 -.9-1.2 -.9-1.2 -1-1.2 -1.1-1.1 -1.2-1.1 -1.2-1 -1.4-.9 -1.4-1 -1.5-.8 -1.6-.8 -1.6-.8 -1.7-.7 -1.9-.7 -1.8-.6 -2-.6 -2.1-.5 -2.1-.5 -2.3-.4 -2.4-.5 -2.5-.4 -11.1-1.2 -13-.8 -14.8-.2 -125.5 0 0 119.5 -66.5 0 0-323.5 219.5 0zM528.4 83.7l0 95 153 0 3.4-.1 3.4-.1 3.2-.3 3.1-.4 3.1-.4 2.9-.6 2.8-.7 2.8-.8 2.6-.9 2.5-1 2.4-1.1 2.3-1.2 2.2-1.3 2.1-1.4 2-1.6 1.9-1.6 1.8-1.7 1.7-1.8 1.5-1.9 1.5-2 1.3-2 1.2-2.1 1.1-2.1 1-2.3 .9-2.3 .7-2.4 .6-2.5 .6-2.5 .4-2.6 .2-2.7 .2-2.8 .1-2.8 -.1-2.7 -.2-2.6 -.2-2.6 -.4-2.5 -.6-2.3 -.6-2.3 -.7-2.3 -.9-2.1 -1-2 -1.1-2 -1.2-1.9 -1.3-1.8 -1.5-1.7 -1.5-1.7 -1.7-1.5 -1.8-1.5 -1.9-1.4 -2-1.3 -2.1-1.2 -2.2-1.1 -2.3-1.1 -2.4-.9 -2.5-.9 -2.6-.7 -2.8-.7 -2.8-.6 -2.9-.5 -3.1-.4 -3.1-.3 -3.2-.2 -3.4-.2 -3.4 0zM1510.4 85.7l-110.5 264.5 -72.5 0 141.5-323.5 83 0 143 323.5 -73.5 0z';
+$('#logo').innerHTML=`<svg viewBox="0 0 1694.9 376.1" height="20" style="display:block" aria-hidden="true"><path d="${SYM}" fill="#F2F7F9"/><path d="${TXT}" fill="#F2F7F9"/></svg>`;
+
+/* Clock, reveals, type switcher */
+const fmt=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Kuala_Lumpur',hour:'2-digit',minute:'2-digit',hour12:false});
+const tick=()=>$$('[data-clock]').forEach(e=>e.textContent=fmt.format(new Date())); tick(); setInterval(tick,15000);
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;e.target.classList.add('in');
+  $$('[data-count]',e.target).forEach(countUp);}),{threshold:.2});
+$$('.ch').forEach(s=>io.observe(s));
+requestAnimationFrame(()=>$('.hero').classList.add('in'));
+const TYPES=[['a','Type A · Geist'],['b','Type B · Cormorant'],['c','Type C · Inter Tight']];
+let ti=0;try{ti=Math.max(0,TYPES.findIndex(t=>t[0]===localStorage.getItem('orcaType')));}catch(e){}
+const setType=i=>{ti=i;root.dataset.type=TYPES[i][0];$('[data-typer]').textContent=TYPES[i][1];try{localStorage.setItem('orcaType',TYPES[i][0])}catch(e){}};
+setType(ti);$('[data-typer]').addEventListener('click',()=>setType((ti+1)%TYPES.length));
+function countUp(el){if(el.done||reduce)return;el.done=1;const to=+el.dataset.count,suf=el.dataset.suf||'',t0=performance.now();
+  const step=n=>{const k=clamp((n-t0)/1600),v=Math.round(to*(1-Math.pow(1-k,3)));el.textContent=v.toLocaleString('en-US')+suf;if(k<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
+function $$(s,r=document){return [...r.querySelectorAll(s)];}
+
+/* Icons (24px grid, stroke) */
+const T=(c,s=15)=>`<text x="12" y="${12+s*.36}" text-anchor="middle" font-size="${s}" font-weight="700" fill="currentColor" stroke="none" font-family="Geist,Arial,sans-serif">${c}</text>`;
+const I={
+  search:'<circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5"/>',
+  target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="currentColor"/>',
+  book:'<path d="M3 5h6.5A2.5 2.5 0 0 1 12 7.5V20a2 2 0 0 0-2-2H3zM21 5h-6.5A2.5 2.5 0 0 0 12 7.5V20a2 2 0 0 1 2-2h7z"/>',
+  play:'<path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/>',
+  chat:'<path d="M4 5h16v11H9l-5 4z"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7"/>',
+  instagram:'<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor"/>',
+  tiktok:'<path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 4c.5 2.6 2.2 4.2 5 4.5"/>',
+  youtube:'<rect x="2.5" y="5.5" width="19" height="13" rx="4"/><path d="M10 9v6l5-3z" fill="currentColor" stroke="none"/>',
+  facebook:'<path d="M14.5 21v-7.5h2.6l.4-3h-3V8.7c0-.9.3-1.5 1.6-1.5h1.5V4.6a20 20 0 0 0-2.3-.1c-2.3 0-3.8 1.4-3.8 3.9v2.1H9v3h2.5V21"/>',
+  linkedin:'<rect x="3.5" y="3.5" width="17" height="17" rx="3"/><path d="M8 10.5V16M8 7.8v.1M11.5 16v-5.5M11.5 13c0-1.6 1-2.6 2.3-2.6s2.2.9 2.2 2.6V16"/>',
+  x:'<path d="M5 4l14 16M19 4L5 20"/>',
+  threads:T('@',17),
+  whatsapp:'<path d="M5 19.5l1.2-3.7A7.6 7.6 0 1 1 9 18.7z"/><path d="M9.3 9.3c.3 2.3 2.1 4.2 4.6 4.8"/>',
+  telegram:'<path d="M3 11.5L21 4l-3 16-6.2-4.6-2.6 3.4-.4-5.6 7.6-6.6-9.6 5.6z"/>',
+  pinterest:'<circle cx="12" cy="12" r="9"/>'+T('P',12),
+  google:T('G',18),
+  email:'<rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/>',
+  web:'<circle cx="12" cy="12" r="8.5"/><ellipse cx="12" cy="12" rx="3.8" ry="8.5"/><path d="M3.5 12h17"/>',
+  ai:'<path d="M11 3c.6 4.4 2.6 6.4 7 7-4.4.6-6.4 2.6-7 7-.6-4.4-2.6-6.4-7-7 4.4-.6 6.4-2.6 7-7z" fill="currentColor" stroke="none"/><path d="M18.5 15c.2 1.4.9 2.1 2.3 2.3-1.4.2-2.1.9-2.3 2.3-.2-1.4-.9-2.1-2.3-2.3 1.4-.2 2.1-.9 2.3-2.3z" fill="currentColor" stroke="none"/>',
+  team:'<circle cx="12" cy="8" r="3"/><path d="M6.5 19c0-3.1 2.5-5.6 5.5-5.6s5.5 2.5 5.5 5.6"/><circle cx="5" cy="10.5" r="2.1"/><path d="M1.8 18c0-2.3 1.4-4 3.3-4"/><circle cx="19" cy="10.5" r="2.1"/><path d="M22.2 18c0-2.3-1.4-4-3.3-4"/>'
+};
+const svg=(k,s=24)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[k]}</svg>`;
+
+/* OS hub: core in the middle, data flowing out to six tools */
+{const M=[['Research','search'],['Strategy','target'],['Brand book','book'],['Creative','play'],['Community','chat'],['Conversion','check']];
+ let lines='',nodes='';
+ M.forEach(([n,k],i)=>{const a=i/6*Math.PI*2-Math.PI/2,x=260+Math.cos(a)*178,y=220+Math.sin(a)*158;
+   lines+=`<line class="flow" x1="260" y1="220" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" style="animation-delay:${-i*.18}s"/>`;
+   nodes+=`<g class="node" transform="translate(${x.toFixed(1)},${y.toFixed(1)})"><circle r="32" style="animation-delay:${i}s"/><g transform="translate(-13,-13) scale(1.08)" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${I[k]}</g><text y="${y<220?-44:52}" text-anchor="middle">${n}</text></g>`;});
+ $('[data-hub]').innerHTML=`<svg viewBox="0 0 520 440" role="img" aria-label="The Orca OS at the centre, connected to research, strategy, brand book, creative, community and conversion">
+   <defs><radialGradient id="cg" cx="40%" cy="35%"><stop offset="0" stop-color="#bfeef4"/><stop offset=".45" stop-color="#1D7F92"/><stop offset="1" stop-color="#0a2a33"/></radialGradient></defs>
+   ${lines}<circle cx="260" cy="220" r="70" fill="rgba(169,225,236,.08)"/><circle class="core" cx="260" cy="220" r="58"/>
+   <g transform="translate(232,192) scale(.1485)"><path d="${SYM}" fill="#F2F7F9"/></g>${nodes}</svg>`;}
+
+/* Growth chart */
+{const px=t=>44+t*486,py=t=>232-196*(Math.exp(3*t)-1)/(Math.exp(3)-1);let d='';
+ for(let i=0;i<=60;i++){const t=i/60;d+=(i?'L':'M')+px(t).toFixed(1)+' '+py(t).toFixed(1);}
+ const MS=[[.03,'Week 1','Live'],[.25,'Month 1','Every day'],[.52,'Month 3','2,000 subs · Animas'],[.8,'Month 6','8,000+ members'],[.98,'Beyond','Compounds']];
+ let grid='';for(let k=0;k<4;k++)grid+=`<line x1="44" x2="530" y1="${40+k*64}" y2="${40+k*64}" stroke="rgba(169,225,236,.08)"/>`;
+ const ms=MS.map(([t,a,b],i)=>{const x=px(t),y=py(t),end=i>2;return `<g class="ms" style="transition-delay:${.6+i*.35}s">
+   <line x1="${x}" x2="${x}" y1="${y}" y2="250" stroke="rgba(169,225,236,.25)" stroke-dasharray="2 4"/>
+   <circle cx="${x}" cy="${y}" r="9" fill="rgba(169,225,236,.15)"/><circle cx="${x}" cy="${y}" r="4.5" fill="#F2F7F9"/>
+   <text class="val" x="${end?x-12:x+12}" y="${y-12}" text-anchor="${end?'end':'start'}">${b}</text>
+   <text x="${x}" y="272" text-anchor="${i===0?'start':i===4?'end':'middle'}">${a}</text></g>`;}).join('');
+ $('[data-chart]').innerHTML=`<svg viewBox="0 0 560 284" role="img" aria-label="Growth over six months">
+   <defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(169,225,236,.35)"/><stop offset="1" stop-color="rgba(169,225,236,0)"/></linearGradient></defs>
+   ${grid}<line x1="44" x2="530" y1="250" y2="250" stroke="rgba(169,225,236,.25)"/>
+   <path class="area" d="${d}L${px(1)} 250L${px(0)} 250Z"/><path class="grow" pathLength="1" d="${d}"/>${ms}</svg>`;}
+
+/* Channels */
+{const C=[['Instagram','instagram'],['TikTok','tiktok'],['YouTube','youtube'],['Facebook','facebook'],['LinkedIn','linkedin'],['X','x'],['Threads','threads'],
+  ['WhatsApp','whatsapp'],['Telegram','telegram'],['Pinterest','pinterest'],['Google','google'],['Email','email'],['Website','web'],['AI answers','ai']];
+ $('[data-chan]').innerHTML=C.map(([n,k],i)=>`<div class="tile" style="--i:${i}">${svg(k,26)}<span>${n}</span></div>`).join('');}
+
+/* Difference badges */
+$('[data-icon="team"]').insertAdjacentHTML('afterbegin',svg('team',30));
+$('[data-orca]').insertAdjacentHTML('afterbegin',`<svg viewBox="0 0 377 377" width="30" height="30" aria-hidden="true"><path d="${SYM}" fill="currentColor"/></svg>`);
+
+/* ---------- Scene ---------- */
+await document.fonts.ready;
+const mobile=()=>innerWidth/innerHeight<.8;
+let renderer=null;try{renderer=new THREE.WebGLRenderer({canvas:$('#gl'),antialias:true});}catch(e){}
+if(renderer){
+renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<900?1.5:1.75));
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(38,1,.1,600);
+const FOG=new THREE.Color(.035,.15,.18),Tm={value:0};
+
+/* Water column, sea floor with caustics, light shafts (unchanged look) */
+scene.add(new THREE.Mesh(new THREE.SphereGeometry(400,48,24),new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,uniforms:{uTime:Tm},
+  vertexShader:`varying vec3 vP;void main(){vP=normalize(position);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`varying vec3 vP;uniform float uTime;
+    void main(){float y=vP.y;vec3 deep=vec3(.015,.05,.065),mid=vec3(.035,.15,.18),up=vec3(.09,.36,.41),top=vec3(.5,.82,.86);
+      vec3 c=mix(deep,mid,smoothstep(-.7,.0,y));c=mix(c,up,smoothstep(.0,.55,y));c=mix(c,top,smoothstep(.6,.98,y));
+      c+=vec3(.75,.95,.96)*pow(max(dot(vP,normalize(vec3(.15,1.,-.3))),0.),30.)*.55;
+      vec2 uv=vP.xz/(y+.08)*3.;float r=sin(uv.x*2.+uTime*.5+sin(uv.y*1.7+uTime*.35)*1.6)*sin(uv.y*2.3-uTime*.42+sin(uv.x*1.3)*1.2);
+      c+=vec3(.55,.85,.88)*smoothstep(.55,1.,r)*smoothstep(.5,.95,y)*.22;gl_FragColor=vec4(c,1.);}`})));
+const fg=new THREE.PlaneGeometry(700,700,140,140);fg.rotateX(-Math.PI/2);
+{const p=fg.attributes.position;for(let i=0;i<p.count;i++){const x=p.getX(i),z=p.getZ(i);p.setY(i,Math.sin(x*.05)*1.4+Math.cos(z*.07+x*.02)*1.1);}}
+const floor=new THREE.Mesh(fg,new THREE.ShaderMaterial({uniforms:{uTime:Tm,uFog:{value:FOG}},
+  vertexShader:`varying vec3 vW;varying float vD;void main(){vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;vec4 mv=viewMatrix*w;vD=-mv.z;gl_Position=projectionMatrix*mv;}`,
+  fragmentShader:`varying vec3 vW;varying float vD;uniform float uTime;uniform vec3 uFog;
+    float cau(vec2 p){float c=0.;for(int i=0;i<3;i++){p+=vec2(sin(p.y*1.3+uTime*.45),cos(p.x*1.1-uTime*.38))*.55;c+=abs(sin(p.x)+sin(p.y));}return c/3.;}
+    void main(){float c=pow(1.-clamp(cau(vW.xz*.16),0.,1.),5.);vec3 col=vec3(.045,.13,.15)+vec3(.5,.85,.88)*c*.4+(vW.y*.02);
+      col=mix(col,uFog,1.-exp(-vD*.016));gl_FragColor=vec4(col,1.);}`}));
+floor.position.y=-6;scene.add(floor);
+const rays=[];
+for(let i=0;i<11;i++){const m=new THREE.Mesh(new THREE.PlaneGeometry(rand(3,9),110),new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{uTime:Tm,uS:{value:Math.random()}},
+  vertexShader:`varying vec2 vU;void main(){vU=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`varying vec2 vU;uniform float uTime,uS;void main(){float a=pow(vU.y,1.6)*(1.-pow(abs(vU.x*2.-1.),1.5))*(.55+.45*sin(uTime*.35+uS*6.28));gl_FragColor=vec4(vec3(.62,.9,.93)*a*.16,1.);}`}));
+  m.position.set(rand(-55,45),48,rand(-70,8));m.userData.lean=rand(-.18,.05);rays.push(m);scene.add(m);}
+
+/* Soft sprite texture (glow + drifting particles) */
+const hc=document.createElement('canvas');hc.width=hc.height=128;{const c=hc.getContext('2d'),g=c.createRadialGradient(64,64,0,64,64,64);
+g.addColorStop(0,'rgba(200,240,246,.9)');g.addColorStop(.35,'rgba(120,200,215,.25)');g.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=g;c.fillRect(0,0,128,128);}
+const tex=new THREE.CanvasTexture(hc);
+const SN=innerWidth<900?900:2000,sg=new THREE.BufferGeometry(),sp=new Float32Array(SN*3);
+for(let i=0;i<SN;i++)sp.set([rand(-60,60),rand(-5,45),rand(-70,35)],i*3);
+sg.setAttribute('position',new THREE.BufferAttribute(sp,3));
+const snow=new THREE.Points(sg,new THREE.PointsMaterial({color:'#cfeef2',size:.2,map:tex,transparent:true,opacity:.5,depthWrite:false}));scene.add(snow);
+
+/* The Orca OS orb: glass sphere of living plasma, the real water-O glowing inside */
+const orb=new THREE.Group();scene.add(orb);
+const U={uTime:Tm,uDim:{value:1}};
+const halo=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:.55}));
+halo.scale.set(26,26,1);halo.renderOrder=1;orb.add(halo);
+const sphere=new THREE.Mesh(new THREE.SphereGeometry(5,128,64),new THREE.ShaderMaterial({uniforms:U,transparent:true,depthWrite:false,
+  vertexShader:`varying vec3 vN,vV,vP;void main(){vP=position;vec4 w=modelMatrix*vec4(position,1.);vN=normalize(mat3(modelMatrix)*normal);vV=normalize(cameraPosition-w.xyz);gl_Position=projectionMatrix*viewMatrix*w;}`,
+  fragmentShader:`uniform float uTime,uDim;varying vec3 vN,vV,vP;
+    float h(vec3 p){p=fract(p*.3183099+.1);p*=17.;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}
+    float n3(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);
+      return mix(mix(mix(h(i),h(i+vec3(1,0,0)),f.x),mix(h(i+vec3(0,1,0)),h(i+vec3(1,1,0)),f.x),f.y),mix(mix(h(i+vec3(0,0,1)),h(i+vec3(1,0,1)),f.x),mix(h(i+vec3(0,1,1)),h(i+vec3(1,1,1)),f.x),f.y),f.z);}
+    float fbm(vec3 p){float s=0.,a=.5;for(int i=0;i<5;i++){s+=a*n3(p);p=p*2.03+vec3(.31,.17,.73);a*=.5;}return s;}
+    void main(){
+      float fr=pow(1.-max(dot(vN,vV),0.),2.4);
+      vec3 q=vP*.32;float t=uTime*.16;
+      vec3 w=vec3(fbm(q+t),fbm(q+vec3(5.2,1.3,2.)-t),fbm(q+vec3(1.7,9.2,3.)+t*.7));
+      float n=fbm(q*1.5+w*2.4);
+      float vein=pow(1.-abs(n*2.-1.),7.);
+      vec3 c=mix(vec3(.01,.09,.12),vec3(.06,.42,.52),smoothstep(.25,.8,n));
+      c+=vec3(.72,.95,.98)*vein*1.1+vec3(.75,.96,1.)*fr*1.3;
+      c+=vec3(1.)*pow(max(dot(reflect(-vV,vN),normalize(vec3(-.4,.8,.5))),0.),40.)*.8;
+      gl_FragColor=vec4(c*uDim,clamp(.6+fr*.4+vein*.25,0.,1.)*uDim);}`}));
+sphere.renderOrder=2;orb.add(sphere);
+const lc=document.createElement('canvas');lc.width=lc.height=512;{const c=lc.getContext('2d');c.translate(56,56);c.scale(400/377,400/377);
+  c.shadowColor='rgba(169,225,236,1)';c.shadowBlur=60;c.fillStyle='#fff';const p=new Path2D(SYM);c.fill(p);c.shadowBlur=20;c.fill(p);}
+const logo=new THREE.Mesh(new THREE.PlaneGeometry(5.6,5.6),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(lc),transparent:true,blending:THREE.AdditiveBlending,depthTest:false,depthWrite:false}));
+logo.renderOrder=3;orb.add(logo);
+
+/* Choreography: orb [x,y,scale,dim] per chapter, in view-plane units (portrait set below) */
+const D=[[7.5,.8,1,1],[15.5,-.5,1.55,.9],[-15,13.5,1.5,.85],[-20,9.5,1.5,.85],[0,17.5,2.9,.85],[-18,10,1.5,.85],[0,0,2.3,.45],[0,7.8,.6,1]];
+const P=[[0,7,.62,1],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,0,1.8,.4],[0,7.2,.58,1]];
+const secs=$$('.ch');let anchors=[];
+const measure=()=>{const max=root.scrollHeight-innerHeight;anchors=secs.map(s=>Math.min(s.offsetTop,max));};
+function stageAt(y){for(let i=anchors.length-2;i>=0;i--)if(y>=anchors[i])return i+clamp((y-anchors[i])/Math.max(1,anchors[i+1]-anchors[i]));return 0;}
+let cur=0,vel=0,mx=0,my=0,cmx=0,cmy=0;
+addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5;});
+function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w/h<1?58:38;camera.updateProjectionMatrix();measure();}
+addEventListener('resize',resize);resize();addEventListener('load',measure);
+let lenis=null;if(!reduce&&window.Lenis){lenis=new Lenis({lerp:.085,wheelMultiplier:.9});lenis.on('scroll',e=>vel=e.velocity);}
+const look=new THREE.Vector3(),clock=new THREE.Clock(),N=D.length-1;
+function frame(now){
+  lenis&&lenis.raf(now);
+  const time=clock.getElapsedTime();Tm.value=time;scene.children[0].material.uniforms.uTime.value=time;
+  const target=stageAt(scrollY);cur+=reduce?target-cur:(target-cur)*.06;
+  const K=mobile()?P:D,i=Math.min(Math.floor(cur),N-1),f=sm(clamp(cur-i)),a=K[i],b=K[i+1],L=(j)=>a[j]+(b[j]-a[j])*f;
+  // camera sinks slowly as you go deeper
+  const depth=cur/N;cmx+=(mx-cmx)*.04;cmy+=(my-cmy)*.04;
+  camera.position.set(cmx*1.6,9-4.5*depth-cmy*.8,32);look.set(0,8.6-4.5*depth,0);camera.lookAt(look);
+  const dist=mobile()?1.18:1;orb.position.set(look.x+L(0)*dist,look.y+L(1),0);
+  orb.scale.setScalar(L(2));U.uDim.value=L(3);halo.material.opacity=.55*L(3);logo.material.opacity=L(3);
+  sphere.rotation.y=time*.08+cmx*.6;sphere.rotation.x=Math.sin(time*.2)*.15-cmy*.4;
+  logo.rotation.z=Math.sin(time*.3)*.04;logo.position.x=cmx*.5;logo.position.y=-cmy*.3;
+  const v=reduce?0:Math.max(-40,Math.min(40,vel));root.style.setProperty('--v',v.toFixed(2));
+  rays.forEach(r=>r.rotation.set(0,Math.atan2(camera.position.x-r.position.x,camera.position.z-r.position.z),r.userData.lean,'YXZ'));
+  const s=snow.geometry.attributes.position;for(let k=0;k<SN;k++){let y=s.getY(k)+.006+Math.abs(v)*.001;if(y>45)y=-5;s.setY(k,y);}s.needsUpdate=true;
+  renderer.render(scene,camera);requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+}
+</script>
+</body>
+</html>

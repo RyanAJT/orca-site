@@ -101,13 +101,6 @@ main{position:relative;z-index:2}
 .steps b{display:block;font-weight:400;font-size:18px;letter-spacing:-.02em;margin:6px 0 4px}
 .steps p{font-size:13.5px;color:var(--mist);max-width:24ch}
 
-/* Channels */
-.chan{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;padding:14px}
-.tile{display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px 6px 12px;border-radius:14px;border:1px solid rgba(169,225,236,.1);color:var(--ice);
-  background:rgba(6,20,26,.35);animation:lit 7s infinite;animation-delay:calc(var(--i) * .5s);transition:transform .4s var(--ease)}
-.tile:hover{transform:translateY(-3px);border-color:var(--ice)}
-.tile span{font-family:var(--monof);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--mist);text-align:center}
-@keyframes lit{0%,6%{background:rgba(169,225,236,.2);border-color:rgba(169,225,236,.7)}14%,100%{background:rgba(6,20,26,.35);border-color:rgba(169,225,236,.1)}}
 
 /* Difference */
 .vs2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:34px;max-width:1100px}
@@ -117,9 +110,6 @@ main{position:relative;z-index:2}
 .badge i{position:absolute;right:-8px;bottom:-8px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-style:normal}
 .card h3{font-weight:400;font-size:20px;letter-spacing:-.02em}
 .card .row{display:grid;grid-template-columns:86px 1fr;gap:12px;padding:12px 0;border-top:1px solid rgba(169,225,236,.12);font-size:15px}
-.card.old{opacity:.8}
-.card.old .row span:last-child{color:var(--mist);text-decoration:line-through;text-decoration-color:rgba(159,179,195,.45)}
-.card.old .badge i{background:#2a3b42;color:var(--mist)}
 .card.new{border-color:rgba(169,225,236,.45);box-shadow:0 0 0 1px rgba(169,225,236,.1),0 30px 90px -30px rgba(169,225,236,.35)}
 .card.new .badge{color:var(--foam);border-color:rgba(169,225,236,.5)}
 .card.new .badge i{background:var(--ice);color:var(--abyss)}
@@ -142,6 +132,27 @@ main{position:relative;z-index:2}
 .dwy h3 b{font-weight:300;margin-left:12px;color:var(--ice)}
 .dwy h3 small{font-size:.6em;color:var(--mist)}
 .dwy p{color:var(--mist);font-size:14.5px;margin-top:2px}
+
+/* Hero parallax: lines drift at different speeds, the block tilts with the mouse */
+.hero .stick{opacity:calc(1 - var(--hp,0) * 1.15)}
+.hero h1{transform:perspective(1000px) rotateY(calc(var(--mx,0) * 7deg)) rotateX(calc(var(--my,0) * -5deg)) skewY(calc(var(--v,0) * .035deg))}
+.hero .l{--k:1;transform:translate3d(calc(var(--mx,0) * var(--k) * -36px),calc(var(--hp,0) * var(--k) * -160px),0)}
+.hero .l:nth-child(1){--k:1.5}.hero .l:nth-child(3){--k:.55}
+.hcta{display:flex;flex-wrap:wrap;gap:10px;margin-top:clamp(22px,4vh,40px)}
+
+/* Two ways */
+.way{display:flex;flex-direction:column;gap:14px}
+.way .top{margin-bottom:0;flex-wrap:wrap}
+.way .top .pill{margin-left:auto}
+.way .price{font-family:var(--disp);font-weight:300;font-size:clamp(2.2rem,3.4vw,3rem);letter-spacing:-.03em;color:var(--foam)}
+.way .price small{font-size:.4em;color:var(--mist);letter-spacing:0}
+.way s,.dwy s{color:var(--mist);font-size:.45em;margin-right:10px;text-decoration-color:rgba(169,225,236,.6)}
+.dwy s{font-size:.7em;margin-left:12px;margin-right:0}
+.way p{color:var(--mist);font-size:15px;max-width:44ch}
+.way ul{list-style:none;display:grid;gap:8px;font-size:14.5px;color:var(--foam)}
+.way li::before{content:"\2713";color:var(--ice);margin-right:10px}
+.way .talk{align-self:flex-start;margin-top:6px}
+.strip{display:flex;flex-wrap:wrap;gap:14px;margin-top:22px;color:var(--ice);opacity:.85;max-width:360px}
 
 /* Floating contact buttons */
 .fab{position:fixed;right:18px;bottom:18px;z-index:30;display:flex;flex-direction:column;gap:10px;opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .4s,transform .5s var(--ease)}
@@ -217,20 +228,18 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
   .hero .lead{margin-bottom:22px}
   .plans .stick{padding-top:110px}
   .split,.vs2,.stats,.maps,.layers{grid-template-columns:1fr}
+  .hero h1{transform:none}.hero .l{transform:translate3d(0,calc(var(--hp,0) * var(--k) * -70px),0)}
   .dwy{flex-direction:column;align-items:flex-start}
   .hero h1 .ind{padding-left:0}
   .steps{grid-template-columns:repeat(2,1fr)}
-  .chan{grid-template-columns:repeat(4,1fr)}
-  .tiers{grid-template-columns:1fr}
+    .tiers{grid-template-columns:1fr}
   .tier.hot{order:-1}
   .veil{background:linear-gradient(0deg,rgba(6,20,26,.85) 0%,rgba(6,20,26,.65) 50%,rgba(6,20,26,0) 68%)}
 }
 @media (prefers-reduced-motion:reduce){
   .js .l>span,.js .fade{transform:none;opacity:1;transition:none}
   .h{transform:none;text-shadow:none}
-  .flow,.node circle,.tile{animation:none}
-  .grow{stroke-dashoffset:0}.area,.chart .ms{opacity:1}
-}
+  .flow,.node circle,}
 </style>
 </head>
 <body>
@@ -239,7 +248,7 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
 
 <header class="nav">
   <a href="#top" id="logo" aria-label="Orca Agentics, back to top"></a>
-  <nav class="mono" aria-label="Main"><a href="#os">The engine</a><a href="#loop">How it works</a><a href="#maps">Industries</a><a href="#plans">Plans</a></nav>
+  <nav class="mono" aria-label="Main"><a href="#ways">Echo Engine</a><a href="#loop">How it works</a><a href="#maps">Industries</a><a href="#plans">Plans</a></nav>
   <div class="r">
     <button class="typer mono" data-typer>Type A · Geist</button>
     <span class="mono clock">KL <span data-clock>--:--</span></span>
@@ -250,12 +259,39 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
 <main>
   <section class="ch hero" id="top">
     <div class="stick">
-      <p class="mono lead fade">We build an AI content engine tailored to your brand, and run it for you.</p>
+      <p class="mono lead fade">Meet the Echo Engine, an AI content engine built around your brand. Run it yourself, or let us run it for you.</p>
       <h1 class="h">
         <span class="l"><span style="--i:0"><em>Acquire,</em></span></span>
         <span class="l ind"><span style="--i:1">Engage &amp; Convert</span></span>
         <span class="l ind"><span style="--i:2">Audiences Autonomously.</span></span>
       </h1>
+      <div class="hcta fade">
+        <a class="talk solid" href="https://wa.me/601154403886?text=Hi%20Orca%2C%20I%20would%20like%20to%20get%20the%20Echo%20Engine%20%28%2499%2Fmo%20early%20access%29.">Get the Echo Engine, $99/mo <span aria-hidden="true">&#8627;</span></a>
+        <a class="talk" href="#ways">Have us run it</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch" id="ways">
+    <div class="stick">
+      <span class="pill fade">Two ways to run Echo</span>
+      <h2 class="h" style="max-width:none"><span class="l"><span style="--i:0">Your engine, <em>your</em> way.</span></span></h2>
+      <div class="vs2 fade">
+        <article class="card glass new way">
+          <div class="top"><span class="badge" data-orca><i>&#10003;</i></span><h3>Get the Echo Engine</h3><span class="pill">Early access &middot; 68% off</span></div>
+          <div class="price"><s>$309</s>$99<small>/mo</small></div>
+          <p>We map and build your Echo Engine around your brand. It runs on your own AI account, and you run it day to day.</p>
+          <ul><li>Your brand engine, set up for you</li><li>Content and messaging layers</li><li>Runs on your own AI account</li></ul>
+          <a class="talk solid" href="https://wa.me/601154403886?text=Hi%20Orca%2C%20I%20would%20like%20to%20get%20the%20Echo%20Engine%20%28%2499%2Fmo%20early%20access%29.">Get access <span aria-hidden="true">&#8627;</span></a>
+        </article>
+        <article class="card glass way">
+          <div class="top"><span class="badge" data-team></span><h3>Let us run it</h3></div>
+          <div class="price"><small>From </small>$800<small>/mo</small></div>
+          <p>We build your Echo Engine and run it every day. You set the direction and approve.</p>
+          <ul><li>Everything in the engine</li><li>We create, post and reply daily</li><li>Hot leads sent to you, plus a morning summary</li></ul>
+          <a class="talk" href="https://wa.me/601154403886?text=Hi%20Orca%2C%20I%20would%20like%20you%20to%20run%20the%20Echo%20Engine%20for%20my%20brand.">Book a call</a>
+        </article>
+      </div>
     </div>
   </section>
 
@@ -263,9 +299,10 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
     <div class="stick">
       <div class="split">
         <div>
-          <span class="pill fade">The engine</span>
-          <h2 class="h"><span class="l"><span style="--i:0"><em>One</em> content</span></span><span class="l"><span style="--i:1">engine, two</span></span><span class="l"><span style="--i:2">layers.</span></span></h2>
-          <p class="lede fade">Done for you, end to end. We build it around your brand and run it every day. You set the direction and approve.</p>
+          <span class="pill fade">Inside the Echo Engine</span>
+          <h2 class="h"><span class="l"><span style="--i:0"><em>One</em> engine,</span></span><span class="l"><span style="--i:1">two layers.</span></span></h2>
+          <p class="lede fade">One layer makes the content. The other turns every reply into a lead. It runs on every channel your customers use.</p>
+          <div class="strip fade" data-chan></div>
         </div>
         <div class="enginep fade">
           <div class="hub glass" data-hub></div>
@@ -288,23 +325,10 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
         <div class="chart glass fade" data-chart></div>
       </div>
       <div class="steps mono fade">
-        <div>Days 1&ndash;3<b>Map</b><p>We learn your brand, your offers and your customers, then plan the engine around them.</p></div>
-        <div>Days 3&ndash;10<b>Build</b><p>We build your content system and your messaging assistant, and test every link.</p></div>
-        <div>Ongoing<b>Run</b><p>We create, post and reply every day. Every result feeds back in, so it keeps getting sharper.</p></div>
+        <div>Days 1&ndash;3<b>Map</b><p>We learn your brand, your offers and your customers, then plan your Echo Engine around them.</p></div>
+        <div>Days 3&ndash;10<b>Build</b><p>We build your content system and messaging assistant, and test every link. On your own AI account if you run it.</p></div>
+        <div>Ongoing<b>Run</b><p>You run it, or we create, post and reply every day. Every result feeds back in, so it keeps getting sharper.</p></div>
         <div class="give">What you give us<b>Four things</b><p>Your brand assets &middot; 15&ndash;20 photos and clips &middot; Your services and FAQs &middot; One person to approve</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="ch" id="reach">
-    <div class="stick">
-      <div class="split">
-        <div>
-          <span class="pill fade">Channels</span>
-          <h2 class="h"><span class="l"><span style="--i:0"><em>Found</em> wherever</span></span><span class="l"><span style="--i:1">your audience</span></span><span class="l"><span style="--i:2">looks.</span></span></h2>
-          <p class="lede fade">We run it on every channel your customers use, and get you recommended in the answers people get from ChatGPT, Gemini and Perplexity.</p>
-        </div>
-        <div class="chan glass fade" data-chan></div>
       </div>
     </div>
   </section>
@@ -315,34 +339,11 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
       <h2 class="h" style="max-width:none"><span class="l"><span style="--i:0">Built for <em>your</em> industry.</span></span></h2>
       <p class="lede fade">See everything we set up for a business like yours, and how a lead moves from first message to sale.</p>
       <div class="maps fade">
-        <a class="mapc glass" href="/map/restaurant/"><img src="/map/restaurant/og.png" alt="" loading="lazy"><b>Restaurants</b><span class="mono">Bookings, orders, reviews, promos &#8599;</span></a>
-        <a class="mapc glass" href="/map/clinic/"><img src="/map/clinic/og.png" alt="" loading="lazy"><b>Clinics</b><span class="mono">Bookings, recalls, treatment plans &#8599;</span></a>
-        <a class="mapc glass" href="/map/realestate/"><img src="/map/realestate/og.png" alt="" loading="lazy"><b>Real estate</b><span class="mono">Every lead, followed to the sale &#8599;</span></a>
+        <a class="mapc glass" href="https://orcaagentics.xyz/map/restaurant/"><img src="https://orcaagentics.xyz/map/restaurant/og.png" alt=""><b>Restaurants</b><span class="mono">Bookings, orders, reviews, promos &#8599;</span></a>
+        <a class="mapc glass" href="https://orcaagentics.xyz/map/clinic/"><img src="https://orcaagentics.xyz/map/clinic/og.png" alt=""><b>Clinics</b><span class="mono">Bookings, recalls, treatment plans &#8599;</span></a>
+        <a class="mapc glass" href="https://orcaagentics.xyz/map/realestate/"><img src="https://orcaagentics.xyz/map/realestate/og.png" alt=""><b>Real estate</b><span class="mono">Every lead, followed to the sale &#8599;</span></a>
       </div>
       <p class="mono soon fade">More industries coming</p>
-    </div>
-  </section>
-
-  <section class="ch" id="vs">
-    <div class="stick">
-      <span class="pill fade">The difference</span>
-      <h2 class="h" style="max-width:none"><span class="l"><span style="--i:0">Replace the team, <em>not</em> the results.</span></span></h2>
-      <div class="vs2 fade">
-        <article class="card glass old">
-          <div class="top"><span class="badge" data-icon="team"><i>&#10005;</i></span><h3>The usual way</h3></div>
-          <div class="row"><span class="mono">Cost</span><span>Salaries, tools and agency retainers</span></div>
-          <div class="row"><span class="mono">Output</span><span>A few posts a week</span></div>
-          <div class="row"><span class="mono">Strategy</span><span>Set once a quarter, then it fades</span></div>
-          <div class="row"><span class="mono">Leads</span><span>Answered when someone is free</span></div>
-        </article>
-        <article class="card glass new">
-          <div class="top"><span class="badge" data-orca><i>&#10003;</i></span><h3>With Orca</h3></div>
-          <div class="row"><span class="mono">Cost</span><span>One plan, from $800 a month</span></div>
-          <div class="row"><span class="mono">Output</span><span>Content every day, on every channel</span></div>
-          <div class="row"><span class="mono">Strategy</span><span>Rebuilt every week from what's working</span></div>
-          <div class="row"><span class="mono">Leads</span><span>Every message answered in seconds, hot leads sent to you</span></div>
-        </article>
-      </div>
     </div>
   </section>
 
@@ -362,6 +363,11 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
     <div class="stick">
       <span class="pill fade">Plans · USD</span>
       <h2 class="h"><span class="l"><span style="--i:0">Pick <em>your</em> plan.</span></span></h2>
+      <p class="lede fade">Run the Echo Engine yourself, or have us run it for you.</p>
+      <div class="dwy glass fade">
+        <div><span class="pill">Early access &middot; 68% off</span><h3>Echo Engine <s>$309</s><b>$99<small>/mo</small></b></h3><p>We build it around your brand on your own AI account. You run it.</p></div>
+        <a class="talk solid" href="https://wa.me/601154403886?text=Hi%20Orca%2C%20I%20would%20like%20to%20get%20the%20Echo%20Engine%20%28%2499%2Fmo%20early%20access%29.">Get access <span aria-hidden="true">&#8627;</span></a>
+      </div>
       <div class="tiers fade">
         <article class="tier">
           <h3>Launch</h3><p class="for">Get the engine running.</p>
@@ -382,17 +388,13 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
           <a class="talk" href="https://wa.me/601154403886?text=Hi%20Orca%2C%20I%20would%20like%20to%20book%20a%20build%20call%20for%20Own%20the%20system.">Book a build call</a>
         </article>
       </div>
-      <div class="dwy glass fade">
-        <div><span class="pill">Early access</span><h3>Done with you <b>$99<small>/mo</small></b></h3><p>We set the engine up with you, and you run it.</p></div>
-        <a class="talk" href="https://wa.me/601154403886?text=Hi%20Orca%2C%20I%20would%20like%20to%20join%20the%20early%20access%20list%20for%20Done%20with%20you.">Join the list</a>
-      </div>
       <div class="tfoot mono fade"><span>20% off retainers on a 1-year contract</span><span>Custom packages priced to need</span></div>
     </div>
   </section>
 
   <section class="ch close" id="talk">
     <div class="stick">
-      <h2 class="h"><span class="l"><span style="--i:0">Let's build <em>your</em></span></span><span class="l"><span style="--i:1">content engine.</span></span></h2>
+      <h2 class="h"><span class="l"><span style="--i:0">Let's build <em>your</em></span></span><span class="l"><span style="--i:1">Echo Engine.</span></span></h2>
       <div class="cta fade">
         <a class="talk solid" href="https://wa.me/601154403886?text=Hi%20Orca%2C%20I%20would%20like%20an%20AI%20content%20engine%20for%20my%20brand.">Message us on WhatsApp <span aria-hidden="true">&#8627;</span></a>
         <a class="talk" href="https://t.me/+RR6OesOQH_w5M2Y1">Join our Telegram</a>
@@ -479,7 +481,7 @@ const svg=(k,s=24)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="n
  let lines='',nodes='';const node=(n,k,x,y,i)=>`<g class="node" transform="translate(${x},${y})"><circle r="26" style="animation-delay:${i}s"/><g transform="translate(-11,-11) scale(.92)" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${I[k]}</g><text y="44" text-anchor="middle">${n}</text></g>`;
  [L,R].forEach((side,s)=>side.forEach(([n,k],j)=>{const x=s?446:74,y=70+j*96;
    lines+=`<line class="flow" x1="260" y1="166" x2="${x}" y2="${y}" style="animation-delay:${-(s*3+j)*.18}s"/>`;nodes+=node(n,k,x,y,s*3+j);}));
- $('[data-hub]').innerHTML=`<svg viewBox="0 0 520 330" role="img" aria-label="The Orca content engine at the centre, with a content layer and a messaging layer">
+ $('[data-hub]').innerHTML=`<svg viewBox="0 0 520 330" role="img" aria-label="The Echo Engine at the centre, with a content layer and a messaging layer">
    <defs><radialGradient id="cg" cx="40%" cy="35%"><stop offset="0" stop-color="#bfeef4"/><stop offset=".45" stop-color="#1D7F92"/><stop offset="1" stop-color="#0a2a33"/></radialGradient></defs>
    <text class="layer" x="74" y="18" text-anchor="middle">Content</text><text class="layer" x="446" y="18" text-anchor="middle">Messaging</text>
    ${lines}<circle cx="260" cy="166" r="66" fill="rgba(169,225,236,.08)"/><circle class="core" cx="260" cy="166" r="54"/>
@@ -503,13 +505,13 @@ const svg=(k,s=24)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="n
 /* Channels */
 {const C=[['Instagram','instagram'],['TikTok','tiktok'],['YouTube','youtube'],['Facebook','facebook'],['LinkedIn','linkedin'],['X','x'],['Threads','threads'],
   ['WhatsApp','whatsapp'],['Telegram','telegram'],['Pinterest','pinterest'],['Google','google'],['Email','email'],['Website','web'],['AI answers','ai']];
- $('[data-chan]').innerHTML=C.map(([n,k],i)=>`<div class="tile" style="--i:${i}">${svg(k,26)}<span>${n}</span></div>`).join('');}
+ $('[data-chan]').innerHTML=C.map(([n,k])=>`<span title="${n}" aria-label="${n}">${svg(k,20)}</span>`).join('');}
 
 $$('.fab [data-ic]').forEach(a=>a.innerHTML=svg(a.dataset.ic,24));
 {const f=$('.fab'),t=()=>f.classList.toggle('on',scrollY>innerHeight*.6);addEventListener('scroll',t,{passive:true});t();}
 
 /* Difference badges */
-$('[data-icon="team"]').insertAdjacentHTML('afterbegin',svg('team',30));
+$('[data-team]').innerHTML=svg('team',30);
 $('[data-orca]').insertAdjacentHTML('afterbegin',`<svg viewBox="0 0 377 377" width="30" height="30" aria-hidden="true"><path d="${SYM}" fill="currentColor"/></svg>`);
 
 /* ---------- Scene ---------- */
@@ -554,6 +556,10 @@ const SN=innerWidth<900?900:2000,sg=new THREE.BufferGeometry(),sp=new Float32Arr
 for(let i=0;i<SN;i++)sp.set([rand(-60,60),rand(-5,45),rand(-70,35)],i*3);
 sg.setAttribute('position',new THREE.BufferAttribute(sp,3));
 const snow=new THREE.Points(sg,new THREE.PointsMaterial({color:'#cfeef2',size:.2,map:tex,transparent:true,opacity:.5,depthWrite:false}));scene.add(snow);
+/* Foreground motes: close to the camera, so they slide past fastest (hero depth) */
+const fgp=new Float32Array((innerWidth<900?50:120)*3);for(let i=0;i<fgp.length;i+=3)fgp.set([rand(-12,12),rand(-4,24),rand(17,26)],i);
+const near=new THREE.Points(new THREE.BufferGeometry().setAttribute('position',new THREE.BufferAttribute(fgp,3)),
+  new THREE.PointsMaterial({color:'#dff6f9',size:.55,map:tex,transparent:true,opacity:.4,depthWrite:false}));scene.add(near);
 
 /* The Orca OS orb: glass sphere of living plasma, the real water-O glowing inside */
 const orb=new THREE.Group();scene.add(orb);
@@ -584,8 +590,8 @@ const logo=new THREE.Mesh(new THREE.PlaneGeometry(5.6,5.6),new THREE.MeshBasicMa
 logo.renderOrder=3;orb.add(logo);
 
 /* Choreography: orb [x,y,scale,dim] per chapter, in view-plane units (portrait set below) */
-const D=[[7.5,.8,1,1],[17,12.5,1.3,.8],[-15,13.5,1.5,.85],[-20,9.5,1.5,.85],[16,10,1.4,.85],[0,17.5,2.9,.85],[-18,10,1.5,.85],[0,0,2.3,.45],[0,7.8,.6,1]];
-const P=[[0,6.2,.62,1],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,0,1.8,.4],[0,7.2,.58,1]];
+const D=[[10,2.6,.95,1],[15,16,1.7,.7],[17,12.5,1.3,.8],[-15,13.5,1.5,.85],[16,10,1.4,.85],[-18,10,1.5,.85],[0,-2,2.3,.3],[0,7.8,.6,1]];
+const P=[[0,6.2,.62,1],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,0,1.8,.4],[0,7.2,.58,1]];
 const secs=$$('.ch');let anchors=[];
 const measure=()=>{const max=root.scrollHeight-innerHeight;anchors=secs.map(s=>Math.min(s.offsetTop,max));};
 function stageAt(y){for(let i=anchors.length-2;i>=0;i--)if(y>=anchors[i])return i+clamp((y-anchors[i])/Math.max(1,anchors[i+1]-anchors[i]));return 0;}
@@ -608,6 +614,8 @@ function frame(now){
   sphere.rotation.y=time*.08+cmx*.6;sphere.rotation.x=Math.sin(time*.2)*.15-cmy*.4;
   logo.rotation.z=Math.sin(time*.3)*.04;logo.position.x=cmx*.5;logo.position.y=-cmy*.3;
   const v=reduce?0:Math.max(-40,Math.min(40,vel));root.style.setProperty('--v',v.toFixed(2));
+  if(!reduce){const hp=clamp(scrollY/innerHeight);root.style.setProperty('--hp',hp.toFixed(3));root.style.setProperty('--mx',cmx.toFixed(3));root.style.setProperty('--my',cmy.toFixed(3));
+    orb.scale.multiplyScalar(1+hp*.35);near.position.y=cur*7;near.position.x=-cmx*2;}
   rays.forEach(r=>r.rotation.set(0,Math.atan2(camera.position.x-r.position.x,camera.position.z-r.position.z),r.userData.lean,'YXZ'));
   const s=snow.geometry.attributes.position;for(let k=0;k<SN;k++){let y=s.getY(k)+.006+Math.abs(v)*.001;if(y>45)y=-5;s.setY(k,y);}s.needsUpdate=true;
   renderer.render(scene,camera);requestAnimationFrame(frame);

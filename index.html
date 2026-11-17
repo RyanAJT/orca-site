@@ -96,7 +96,7 @@ main{position:relative;z-index:2}
 .chart .ms{opacity:0;transition:opacity .6s ease}
 .in .chart .ms{opacity:1}
 .chart .val{fill:var(--foam);font-family:var(--disp);font-size:13px;letter-spacing:0;text-transform:none}
-.steps{display:grid;grid-template-columns:repeat(5,1fr);margin-top:28px;border-top:1px solid rgba(169,225,236,.16)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);margin-top:28px;border-top:1px solid rgba(169,225,236,.16)}
 .steps div{padding:14px 18px 0 0}
 .steps b{display:block;font-weight:400;font-size:18px;letter-spacing:-.02em;margin:6px 0 4px}
 .steps p{font-size:13.5px;color:var(--mist);max-width:24ch}
@@ -123,6 +123,43 @@ main{position:relative;z-index:2}
 .card.new{border-color:rgba(169,225,236,.45);box-shadow:0 0 0 1px rgba(169,225,236,.1),0 30px 90px -30px rgba(169,225,236,.35)}
 .card.new .badge{color:var(--foam);border-color:rgba(169,225,236,.5)}
 .card.new .badge i{background:var(--ice);color:var(--abyss)}
+
+/* Engine layers */
+.enginep{display:flex;flex-direction:column;gap:12px}
+.hub{padding:14px 18px;aspect-ratio:auto}
+.hub svg{aspect-ratio:520/330;height:auto}
+.layer{fill:var(--ice);font-family:var(--monof);font-size:11px;letter-spacing:.12em;text-transform:uppercase}
+.layers{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lay{padding:18px 20px;border-radius:20px}
+.lay .mono{color:var(--ice)}
+.lay ul{list-style:none;display:grid;gap:7px;margin-top:10px;font-size:14px;color:var(--foam)}
+.lay li{display:flex;gap:9px;align-items:baseline}
+.lay li::before{content:"";flex:none;width:10px;height:6px;border-left:1.5px solid var(--ice);border-bottom:1.5px solid var(--ice);transform:rotate(-45deg) translateY(-3px)}
+.steps .give b{color:var(--ice)}
+.soon{color:var(--mist);margin-top:16px}
+.dwy{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-top:16px;max-width:1240px;padding:18px 24px;border-radius:20px}
+.dwy h3{font-family:var(--disp);font-weight:300;font-size:22px;letter-spacing:var(--tr);margin-top:8px}
+.dwy h3 b{font-weight:300;margin-left:12px;color:var(--ice)}
+.dwy h3 small{font-size:.6em;color:var(--mist)}
+.dwy p{color:var(--mist);font-size:14.5px;margin-top:2px}
+
+/* Floating contact buttons */
+.fab{position:fixed;right:18px;bottom:18px;z-index:30;display:flex;flex-direction:column;gap:10px;opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .4s,transform .5s var(--ease)}
+.fab.on{opacity:1;transform:none;pointer-events:auto}
+@media (max-width:760px){.fab{right:12px;bottom:12px}.fab a{width:44px;height:44px}}
+.fab a{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:var(--abyss);background:var(--foam);
+  box-shadow:0 12px 30px -8px rgba(0,0,0,.55),0 0 0 1px rgba(169,225,236,.3);transition:transform .4s var(--ease),background .3s}
+.fab a:hover{transform:translateY(-3px) scale(1.05);background:var(--ice)}
+.fab a:active{transform:scale(.95)}
+.fab a+a{background:rgba(9,32,40,.75);color:var(--ice);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+
+/* Industry maps */
+.maps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px;max-width:1150px}
+.mapc{display:flex;flex-direction:column;gap:8px;padding:12px 12px 18px;transition:transform .5s var(--ease),border-color .3s}
+.mapc:hover{transform:translateY(-4px);border-color:rgba(169,225,236,.45)}
+.mapc img{width:100%;aspect-ratio:1200/630;object-fit:cover;border-radius:14px;display:block;margin-bottom:6px}
+.mapc b{font-weight:400;font-size:20px;letter-spacing:-.02em;padding:0 4px}
+.mapc .mono{color:var(--mist);padding:0 4px}
 
 /* Proof */
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
@@ -174,9 +211,13 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
   .nav{grid-template-columns:1fr auto;padding:14px 16px}
   .nav .talk{padding:8px 14px;font-size:13px}
   .ch{min-height:auto}
-  .stick{position:relative;min-height:100vh;padding-top:40vh}
+  .stick{position:relative;min-height:100vh;min-height:100svh;padding-top:40svh}
+  .hero .stick{padding-top:34svh;padding-bottom:28px}
+  .hero h1{font-size:clamp(2.4rem,11.5vw,3.4rem)}
+  .hero .lead{margin-bottom:22px}
   .plans .stick{padding-top:110px}
-  .split,.vs2,.stats{grid-template-columns:1fr}
+  .split,.vs2,.stats,.maps,.layers{grid-template-columns:1fr}
+  .dwy{flex-direction:column;align-items:flex-start}
   .hero h1 .ind{padding-left:0}
   .steps{grid-template-columns:repeat(2,1fr)}
   .chan{grid-template-columns:repeat(4,1fr)}
@@ -198,18 +239,18 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
 
 <header class="nav">
   <a href="#top" id="logo" aria-label="Orca Agentics, back to top"></a>
-  <nav class="mono" aria-label="Main"><a href="#os">The OS</a><a href="#loop">Timeline</a><a href="#proof">Proof</a><a href="#plans">Plans</a></nav>
+  <nav class="mono" aria-label="Main"><a href="#os">The engine</a><a href="#loop">How it works</a><a href="#maps">Industries</a><a href="#plans">Plans</a></nav>
   <div class="r">
     <button class="typer mono" data-typer>Type A · Geist</button>
     <span class="mono clock">KL <span data-clock>--:--</span></span>
-    <a class="talk" href="https://instagram.com/orca.agentics">Let's talk <span aria-hidden="true">&#8627;</span></a>
+    <a class="talk" href="https://wa.me/601154403886?text=Hi%20Orca%2C%20I%20would%20like%20an%20AI%20content%20engine%20for%20my%20brand.">Let's talk <span aria-hidden="true">&#8627;</span></a>
   </div>
 </header>
 
 <main>
   <section class="ch hero" id="top">
     <div class="stick">
-      <p class="mono lead fade">The operating system that replaces the marketing team. At only a fraction of the cost.</p>
+      <p class="mono lead fade">We build an AI content engine tailored to your brand, and run it for you.</p>
       <h1 class="h">
         <span class="l"><span style="--i:0"><em>Acquire,</em></span></span>
         <span class="l ind"><span style="--i:1">Engage &amp; Convert</span></span>
@@ -222,11 +263,17 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
     <div class="stick">
       <div class="split">
         <div>
-          <span class="pill fade">The OS</span>
-          <h2 class="h"><span class="l"><span style="--i:0"><em>One</em> operating</span></span><span class="l"><span style="--i:1">system for every</span></span><span class="l"><span style="--i:2">channel.</span></span></h2>
-          <p class="lede fade">Done for you, end to end. We research, create, post, reply and book the leads. You set the direction and approve.</p>
+          <span class="pill fade">The engine</span>
+          <h2 class="h"><span class="l"><span style="--i:0"><em>One</em> content</span></span><span class="l"><span style="--i:1">engine, two</span></span><span class="l"><span style="--i:2">layers.</span></span></h2>
+          <p class="lede fade">Done for you, end to end. We build it around your brand and run it every day. You set the direction and approve.</p>
         </div>
-        <div class="hub glass fade" data-hub></div>
+        <div class="enginep fade">
+          <div class="hub glass" data-hub></div>
+          <div class="layers">
+            <div class="glass lay"><span class="mono">Content</span><ul><li>Reels and posts in your brand voice</li><li>Captions and scheduling on every channel</li><li>Comment &rarr; DM &rarr; guide page</li></ul></div>
+            <div class="glass lay"><span class="mono">Messaging</span><ul><li>WhatsApp and Telegram assistant that answers FAQs</li><li>Sends the right link and captures the lead</li><li>Hands hot leads to us, sends you a morning summary</li></ul></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -235,17 +282,16 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
     <div class="stick">
       <div class="split">
         <div>
-          <span class="pill fade">Timeline</span>
-          <h2 class="h"><span class="l"><span style="--i:0">Research <em>to</em></span></span><span class="l"><span style="--i:1">revenue.</span></span></h2>
+          <span class="pill fade">How it works</span>
+          <h2 class="h"><span class="l"><span style="--i:0">Map, Build,</span></span><span class="l"><span style="--i:1"><em>then</em> Run.</span></span></h2>
         </div>
         <div class="chart glass fade" data-chart></div>
       </div>
       <div class="steps mono fade">
-        <div>Week 1<b>Live</b><p>We map your business, write your brand book and go live within a week.</p></div>
-        <div>Month 1<b>Every day</b><p>Content on every channel. Every DM answered, leads start booking.</p></div>
-        <div>Month 3<b>Momentum</b><p>The strategy knows what works. Animas hit 2,000 subscribers here.</p></div>
-        <div>Month 6<b>Scale</b><p>Trader Hub reached 8,000+ members and $120K+ by month six.</p></div>
-        <div>Beyond<b>Compounds</b><p>Most strategies decay. This one keeps learning.</p></div>
+        <div>Days 1&ndash;3<b>Map</b><p>We learn your brand, your offers and your customers, then plan the engine around them.</p></div>
+        <div>Days 3&ndash;10<b>Build</b><p>We build your content system and your messaging assistant, and test every link.</p></div>
+        <div>Ongoing<b>Run</b><p>We create, post and reply every day. Every result feeds back in, so it keeps getting sharper.</p></div>
+        <div class="give">What you give us<b>Four things</b><p>Your brand assets &middot; 15&ndash;20 photos and clips &middot; Your services and FAQs &middot; One person to approve</p></div>
       </div>
     </div>
   </section>
@@ -263,6 +309,20 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
     </div>
   </section>
 
+  <section class="ch" id="maps">
+    <div class="stick">
+      <span class="pill fade">Industries</span>
+      <h2 class="h" style="max-width:none"><span class="l"><span style="--i:0">Built for <em>your</em> industry.</span></span></h2>
+      <p class="lede fade">See everything we set up for a business like yours, and how a lead moves from first message to sale.</p>
+      <div class="maps fade">
+        <a class="mapc glass" href="/map/restaurant/"><img src="/map/restaurant/og.png" alt="" loading="lazy"><b>Restaurants</b><span class="mono">Bookings, orders, reviews, promos &#8599;</span></a>
+        <a class="mapc glass" href="/map/clinic/"><img src="/map/clinic/og.png" alt="" loading="lazy"><b>Clinics</b><span class="mono">Bookings, recalls, treatment plans &#8599;</span></a>
+        <a class="mapc glass" href="/map/realestate/"><img src="/map/realestate/og.png" alt="" loading="lazy"><b>Real estate</b><span class="mono">Every lead, followed to the sale &#8599;</span></a>
+      </div>
+      <p class="mono soon fade">More industries coming</p>
+    </div>
+  </section>
+
   <section class="ch" id="vs">
     <div class="stick">
       <span class="pill fade">The difference</span>
@@ -277,10 +337,10 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
         </article>
         <article class="card glass new">
           <div class="top"><span class="badge" data-orca><i>&#10003;</i></span><h3>With Orca</h3></div>
-          <div class="row"><span class="mono">Cost</span><span>One plan, from $2,000 a month</span></div>
+          <div class="row"><span class="mono">Cost</span><span>One plan, from $800 a month</span></div>
           <div class="row"><span class="mono">Output</span><span>Content every day, on every channel</span></div>
           <div class="row"><span class="mono">Strategy</span><span>Rebuilt every week from what's working</span></div>
-          <div class="row"><span class="mono">Leads</span><span>Every message answered in seconds, leads booked</span></div>
+          <div class="row"><span class="mono">Leads</span><span>Every message answered in seconds, hot leads sent to you</span></div>
         </article>
       </div>
     </div>
@@ -292,7 +352,7 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
       <h2 class="h"><span class="l"><span style="--i:0">Results, <em>not</em></span></span><span class="l"><span style="--i:1">promises.</span></span></h2>
       <div class="stats fade">
         <div class="stat glass"><span class="big" data-count="8000" data-suf="+">8,000+</span><p>members and $120K+ in six months, grown by Liam, an AI influencer who posts every day.</p><span class="mono">Trader Hub</span></div>
-        <div class="stat glass"><span class="big" data-count="2000">2,000</span><p>subscribers in three months, from the very first post.</p><span class="mono">Animas</span></div>
+        <div class="stat glass"><span class="big" data-count="2000">2,000</span><p>subscribers in 90 days, from the very first post.</p><span class="mono">Animas</span></div>
         <div class="stat glass"><span class="big" data-count="50" data-suf="M+">50M+</span><p>views and $450K+ in sales across 10+ brands we've grown.*</p><span class="mono">Incl. Jade Watches product films</span></div>
       </div>
     </div>
@@ -305,35 +365,39 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
       <div class="tiers fade">
         <article class="tier">
           <h3>Launch</h3><p class="for">Get the engine running.</p>
-          <div class="price">$2,000<small>/mo</small></div><p class="note mono">$1,600/mo on a 1-year contract</p>
+          <div class="price">$800<small>/mo</small></div><p class="note mono">$640/mo on a 1-year contract</p>
           <ul><li>Posts, reels and AI video every week</li><li>GEO audit and fixes</li><li>Comment-to-DM lead capture</li></ul>
-          <a class="talk" href="https://instagram.com/orca.agentics">Start with Launch</a>
+          <a class="talk" href="https://wa.me/601154403886?text=Hi%20Orca%2C%20I%20would%20like%20to%20start%20with%20Launch.">Start with Launch</a>
         </article>
         <article class="tier hot">
-          <div class="top"><h3>Scale</h3><span class="pill">Most popular</span></div><p class="for">Your whole marketing team, replaced.</p>
-          <div class="price">$5,000<small>/mo</small></div><p class="note mono">$4,000/mo on a 1-year contract</p>
-          <ul><li><b>Everything in Launch, plus</b></li><li>Content every day, on every channel</li><li>Your own AI influencer</li><li>WhatsApp agent and bookings</li><li>Monthly AI search tracking</li><li>Live performance dashboard</li></ul>
-          <a class="talk solid" href="https://instagram.com/orca.agentics">Go Scale <span aria-hidden="true">&#8627;</span></a>
+          <div class="top"><h3>Scale</h3><span class="pill">Most popular</span></div><p class="for">Your whole content team, replaced.</p>
+          <div class="price">$1,200<small>/mo</small></div><p class="note mono">$960/mo on a 1-year contract</p>
+          <ul><li><b>Everything in Launch, plus</b></li><li>Content every day, on every channel</li><li>Your own AI influencer</li><li>WhatsApp and Telegram assistant with bookings</li><li>Monthly AI search tracking</li><li>Live performance dashboard</li></ul>
+          <a class="talk solid" href="https://wa.me/601154403886?text=Hi%20Orca%2C%20I%20would%20like%20to%20go%20with%20Scale.">Go Scale <span aria-hidden="true">&#8627;</span></a>
         </article>
         <article class="tier">
-          <h3>Own the system</h3><p class="for">Keep the whole framework in-house.</p>
-          <div class="price">$12,000<small> one-time</small></div><p class="note mono">+ $800/mo upkeep</p>
-          <ul><li>Everything in Scale</li><li>Full framework built and handed over</li><li>Training for your team</li></ul>
-          <a class="talk" href="https://instagram.com/orca.agentics">Book a build call</a>
+          <h3>Own the system</h3><p class="for">Keep the whole engine in-house.</p>
+          <div class="price">$5,000<small> one-time</small></div><p class="note mono">+ $300/mo upkeep</p>
+          <ul><li>Everything in Scale</li><li>Full engine built and handed over</li><li>Training for your team</li></ul>
+          <a class="talk" href="https://wa.me/601154403886?text=Hi%20Orca%2C%20I%20would%20like%20to%20book%20a%20build%20call%20for%20Own%20the%20system.">Book a build call</a>
         </article>
       </div>
-      <div class="tfoot mono fade"><span>AI tools from $400/mo on every plan</span><span>Websites from RM800</span><span>Custom packages priced to need</span></div>
+      <div class="dwy glass fade">
+        <div><span class="pill">Early access</span><h3>Done with you <b>$99<small>/mo</small></b></h3><p>We set the engine up with you, and you run it.</p></div>
+        <a class="talk" href="https://wa.me/601154403886?text=Hi%20Orca%2C%20I%20would%20like%20to%20join%20the%20early%20access%20list%20for%20Done%20with%20you.">Join the list</a>
+      </div>
+      <div class="tfoot mono fade"><span>20% off retainers on a 1-year contract</span><span>Custom packages priced to need</span></div>
     </div>
   </section>
 
   <section class="ch close" id="talk">
     <div class="stick">
-      <h2 class="h"><span class="l"><span style="--i:0">Let's build <em>your</em></span></span><span class="l"><span style="--i:1">operating system.</span></span></h2>
+      <h2 class="h"><span class="l"><span style="--i:0">Let's build <em>your</em></span></span><span class="l"><span style="--i:1">content engine.</span></span></h2>
       <div class="cta fade">
-        <a class="talk solid" href="https://instagram.com/orca.agentics">Send us a DM <span aria-hidden="true">&#8627;</span></a>
-        <a class="talk" href="mailto:orcaagentics@gmail.com">Email us</a>
+        <a class="talk solid" href="https://wa.me/601154403886?text=Hi%20Orca%2C%20I%20would%20like%20an%20AI%20content%20engine%20for%20my%20brand.">Message us on WhatsApp <span aria-hidden="true">&#8627;</span></a>
+        <a class="talk" href="https://t.me/+RR6OesOQH_w5M2Y1">Join our Telegram</a>
       </div>
-      <p class="mono fade">orcaagentics@gmail.com · @orca.agentics</p>
+      <p class="mono fade">WhatsApp +60 11-5440 3886 · @orca.agentics · orcaagentics@gmail.com</p>
     </div>
   </section>
 </main>
@@ -341,9 +405,16 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
 <footer class="mono">
   <span>© 2026 Orca Agentics</span>
   <span>Kuala Lumpur · GMT+8 · <span data-clock>--:--</span></span>
+  <a href="https://wa.me/601154403886">WhatsApp</a>
+  <a href="https://t.me/+RR6OesOQH_w5M2Y1">Telegram</a>
   <a href="https://instagram.com/orca.agentics">Instagram</a>
   <span>*Totals across the brands we've grown</span>
 </footer>
+
+<div class="fab" aria-label="Message Orca">
+  <a href="https://wa.me/601154403886?text=Hi%20Orca%2C%20I%20would%20like%20an%20AI%20content%20engine%20for%20my%20brand." aria-label="Message us on WhatsApp" data-ic="whatsapp"></a>
+  <a href="https://t.me/+RR6OesOQH_w5M2Y1" aria-label="Join our Telegram" data-ic="telegram"></a>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
@@ -396,32 +467,35 @@ const I={
   email:'<rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/>',
   web:'<circle cx="12" cy="12" r="8.5"/><ellipse cx="12" cy="12" rx="3.8" ry="8.5"/><path d="M3.5 12h17"/>',
   ai:'<path d="M11 3c.6 4.4 2.6 6.4 7 7-4.4.6-6.4 2.6-7 7-.6-4.4-2.6-6.4-7-7 4.4-.6 6.4-2.6 7-7z" fill="currentColor" stroke="none"/><path d="M18.5 15c.2 1.4.9 2.1 2.3 2.3-1.4.2-2.1.9-2.3 2.3-.2-1.4-.9-2.1-2.3-2.3 1.4-.2 2.1-.9 2.3-2.3z" fill="currentColor" stroke="none"/>',
+  cal:'<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+  send:'<path d="M3 11.5L21 4l-3 16-6.2-4.6-2.6 3.4-.4-5.6 7.6-6.6-9.6 5.6z"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
   team:'<circle cx="12" cy="8" r="3"/><path d="M6.5 19c0-3.1 2.5-5.6 5.5-5.6s5.5 2.5 5.5 5.6"/><circle cx="5" cy="10.5" r="2.1"/><path d="M1.8 18c0-2.3 1.4-4 3.3-4"/><circle cx="19" cy="10.5" r="2.1"/><path d="M22.2 18c0-2.3-1.4-4-3.3-4"/>'
 };
 const svg=(k,s=24)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[k]}</svg>`;
 
-/* OS hub: core in the middle, data flowing out to six tools */
-{const M=[['Research','search'],['Strategy','target'],['Brand book','book'],['Creative','play'],['Community','chat'],['Conversion','check']];
- let lines='',nodes='';
- M.forEach(([n,k],i)=>{const a=i/6*Math.PI*2-Math.PI/2,x=260+Math.cos(a)*178,y=220+Math.sin(a)*158;
-   lines+=`<line class="flow" x1="260" y1="220" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" style="animation-delay:${-i*.18}s"/>`;
-   nodes+=`<g class="node" transform="translate(${x.toFixed(1)},${y.toFixed(1)})"><circle r="32" style="animation-delay:${i}s"/><g transform="translate(-13,-13) scale(1.08)" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${I[k]}</g><text y="${y<220?-44:52}" text-anchor="middle">${n}</text></g>`;});
- $('[data-hub]').innerHTML=`<svg viewBox="0 0 520 440" role="img" aria-label="The Orca OS at the centre, connected to research, strategy, brand book, creative, community and conversion">
+/* Engine hub: the Orca core with two layers branching out */
+{const L=[['Reels & posts','play'],['Scheduling','cal'],['Comment to DM','send']],R=[['FAQs answered','chat'],['Lead capture','target'],['Morning summary','sun']];
+ let lines='',nodes='';const node=(n,k,x,y,i)=>`<g class="node" transform="translate(${x},${y})"><circle r="26" style="animation-delay:${i}s"/><g transform="translate(-11,-11) scale(.92)" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${I[k]}</g><text y="44" text-anchor="middle">${n}</text></g>`;
+ [L,R].forEach((side,s)=>side.forEach(([n,k],j)=>{const x=s?446:74,y=70+j*96;
+   lines+=`<line class="flow" x1="260" y1="166" x2="${x}" y2="${y}" style="animation-delay:${-(s*3+j)*.18}s"/>`;nodes+=node(n,k,x,y,s*3+j);}));
+ $('[data-hub]').innerHTML=`<svg viewBox="0 0 520 330" role="img" aria-label="The Orca content engine at the centre, with a content layer and a messaging layer">
    <defs><radialGradient id="cg" cx="40%" cy="35%"><stop offset="0" stop-color="#bfeef4"/><stop offset=".45" stop-color="#1D7F92"/><stop offset="1" stop-color="#0a2a33"/></radialGradient></defs>
-   ${lines}<circle cx="260" cy="220" r="70" fill="rgba(169,225,236,.08)"/><circle class="core" cx="260" cy="220" r="58"/>
-   <g transform="translate(232,192) scale(.1485)"><path d="${SYM}" fill="#F2F7F9"/></g>${nodes}</svg>`;}
+   <text class="layer" x="74" y="18" text-anchor="middle">Content</text><text class="layer" x="446" y="18" text-anchor="middle">Messaging</text>
+   ${lines}<circle cx="260" cy="166" r="66" fill="rgba(169,225,236,.08)"/><circle class="core" cx="260" cy="166" r="54"/>
+   <g transform="translate(234,140) scale(.138)"><path d="${SYM}" fill="#F2F7F9"/></g>${nodes}</svg>`;}
 
 /* Growth chart */
 {const px=t=>44+t*486,py=t=>232-196*(Math.exp(3*t)-1)/(Math.exp(3)-1);let d='';
  for(let i=0;i<=60;i++){const t=i/60;d+=(i?'L':'M')+px(t).toFixed(1)+' '+py(t).toFixed(1);}
- const MS=[[.03,'Week 1','Live'],[.25,'Month 1','Every day'],[.52,'Month 3','2,000 subs · Animas'],[.8,'Month 6','8,000+ members'],[.98,'Beyond','Compounds']];
+ const MS=[[.03,'Days 1–3','Map'],[.2,'Day 10','Live'],[.52,'Month 3','2,000 subs · Animas'],[.8,'Month 6','8,000+ members · Trader Hub'],[.98,'Beyond','It compounds']];
  let grid='';for(let k=0;k<4;k++)grid+=`<line x1="44" x2="530" y1="${40+k*64}" y2="${40+k*64}" stroke="rgba(169,225,236,.08)"/>`;
  const ms=MS.map(([t,a,b],i)=>{const x=px(t),y=py(t),end=i>2;return `<g class="ms" style="transition-delay:${.6+i*.35}s">
    <line x1="${x}" x2="${x}" y1="${y}" y2="250" stroke="rgba(169,225,236,.25)" stroke-dasharray="2 4"/>
    <circle cx="${x}" cy="${y}" r="9" fill="rgba(169,225,236,.15)"/><circle cx="${x}" cy="${y}" r="4.5" fill="#F2F7F9"/>
    <text class="val" x="${end?x-12:x+12}" y="${y-12}" text-anchor="${end?'end':'start'}">${b}</text>
    <text x="${x}" y="272" text-anchor="${i===0?'start':i===4?'end':'middle'}">${a}</text></g>`;}).join('');
- $('[data-chart]').innerHTML=`<svg viewBox="0 0 560 284" role="img" aria-label="Growth over six months">
+ $('[data-chart]').innerHTML=`<svg viewBox="0 0 560 284" role="img" aria-label="Map, build, live in ten days, then growth over six months">
    <defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(169,225,236,.35)"/><stop offset="1" stop-color="rgba(169,225,236,0)"/></linearGradient></defs>
    ${grid}<line x1="44" x2="530" y1="250" y2="250" stroke="rgba(169,225,236,.25)"/>
    <path class="area" d="${d}L${px(1)} 250L${px(0)} 250Z"/><path class="grow" pathLength="1" d="${d}"/>${ms}</svg>`;}
@@ -430,6 +504,9 @@ const svg=(k,s=24)=>`<svg viewBox="0 0 24 24" width="${s}" height="${s}" fill="n
 {const C=[['Instagram','instagram'],['TikTok','tiktok'],['YouTube','youtube'],['Facebook','facebook'],['LinkedIn','linkedin'],['X','x'],['Threads','threads'],
   ['WhatsApp','whatsapp'],['Telegram','telegram'],['Pinterest','pinterest'],['Google','google'],['Email','email'],['Website','web'],['AI answers','ai']];
  $('[data-chan]').innerHTML=C.map(([n,k],i)=>`<div class="tile" style="--i:${i}">${svg(k,26)}<span>${n}</span></div>`).join('');}
+
+$$('.fab [data-ic]').forEach(a=>a.innerHTML=svg(a.dataset.ic,24));
+{const f=$('.fab'),t=()=>f.classList.toggle('on',scrollY>innerHeight*.6);addEventListener('scroll',t,{passive:true});t();}
 
 /* Difference badges */
 $('[data-icon="team"]').insertAdjacentHTML('afterbegin',svg('team',30));
@@ -507,8 +584,8 @@ const logo=new THREE.Mesh(new THREE.PlaneGeometry(5.6,5.6),new THREE.MeshBasicMa
 logo.renderOrder=3;orb.add(logo);
 
 /* Choreography: orb [x,y,scale,dim] per chapter, in view-plane units (portrait set below) */
-const D=[[7.5,.8,1,1],[15.5,-.5,1.55,.9],[-15,13.5,1.5,.85],[-20,9.5,1.5,.85],[0,17.5,2.9,.85],[-18,10,1.5,.85],[0,0,2.3,.45],[0,7.8,.6,1]];
-const P=[[0,7,.62,1],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,0,1.8,.4],[0,7.2,.58,1]];
+const D=[[7.5,.8,1,1],[17,12.5,1.3,.8],[-15,13.5,1.5,.85],[-20,9.5,1.5,.85],[16,10,1.4,.85],[0,17.5,2.9,.85],[-18,10,1.5,.85],[0,0,2.3,.45],[0,7.8,.6,1]];
+const P=[[0,6.2,.62,1],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,16.5,1.35,.85],[0,0,1.8,.4],[0,7.2,.58,1]];
 const secs=$$('.ch');let anchors=[];
 const measure=()=>{const max=root.scrollHeight-innerHeight;anchors=secs.map(s=>Math.min(s.offsetTop,max));};
 function stageAt(y){for(let i=anchors.length-2;i>=0;i--)if(y>=anchors[i])return i+clamp((y-anchors[i])/Math.max(1,anchors[i+1]-anchors[i]));return 0;}

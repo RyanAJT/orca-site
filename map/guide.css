@@ -38,6 +38,15 @@ body>.w{position:relative;z-index:1;text-shadow:0 1px 14px rgba(3,10,13,.85)}
   background:linear-gradient(180deg,rgba(23,58,69,.55),rgba(6,20,26,.65));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 .opt.hot{background:linear-gradient(160deg,#e9f8fa,#a9e1ec);color:#04161b;border-color:transparent;box-shadow:0 40px 90px -30px rgba(169,225,236,.45)}
 .opt .tag{align-self:flex-start;font:600 11px JB;letter-spacing:.14em;text-transform:uppercase;padding:6px 10px;border-radius:99px;background:rgba(63,208,224,.15);color:var(--ice)}
+.opt.hot{text-shadow:none;overflow:hidden;isolation:isolate;animation:glow 3s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:0 40px 90px -30px rgba(169,225,236,.45),0 0 0 2px rgba(169,225,236,.9),0 0 50px 6px rgba(63,208,224,.55)}}
+.opt.hot::after{content:"";position:absolute;inset:-40% -60%;z-index:-1;pointer-events:none;
+  background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,.75) 50%,transparent 58%);transform:translateX(-60%);animation:shine 3.6s ease-in-out infinite}
+@keyframes shine{0%,55%{transform:translateX(-60%)}100%{transform:translateX(60%)}}
+.opt.hot .btn{position:relative}
+.opt.hot .btn::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 0 0 rgba(4,22,27,.55);animation:ping 2s ease-out infinite}
+@keyframes ping{to{box-shadow:0 0 0 14px rgba(4,22,27,0)}}
+@media (prefers-reduced-motion:reduce){.opt.hot,.opt.hot::after,.opt.hot .btn::after{animation:none}}
 .opt.hot .tag{background:#04161b;color:var(--ice)}
 .opt h3{font:800 26px/1.1 IT;letter-spacing:-.03em}
 .opt p{color:var(--dim);font-size:15.5px}.opt.hot p{color:#24525f}

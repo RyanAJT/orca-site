@@ -59,7 +59,8 @@ body>.w{position:relative;z-index:1;text-shadow:0 1px 14px rgba(3,10,13,.85)}
 .btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px -8px rgba(63,208,224,.6)}
 .btn.dark{background:#04161b;color:#e9f6f8}
 .btn.ghost{background:rgba(255,255,255,.06);color:var(--ink);border:1px solid rgba(169,225,236,.25)}
-.cta2 .sm{margin-top:16px}
+.touch{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:30px}
+.touch .btns{justify-content:center}
 
 /* Desktop: wider page, hero beside its map, agents as text + visual rows */
 @media (min-width:900px){

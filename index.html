@@ -259,7 +259,43 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
   .h{transform:none;text-shadow:none}
   .flow,.node circle,.node>g>g,.rip,.orbit,.corebox{animation:none}.pkt{display:none}}
 </style>
-<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="any"><link rel="apple-touch-icon" href="/apple-touch-icon.png"></head>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="any"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&display=swap" rel="stylesheet"><style>
+.swim{position:absolute;top:0;bottom:0;left:calc(-1*var(--gut));right:calc(-1*var(--gut));isolation:isolate}
+.swim .bg{position:absolute;inset:0;overflow:hidden;background:radial-gradient(120% 80% at 50% -15%,#2a93a6 0%,#14606f 28%,#0a3a47 52%,#052029 76%,#020d11 100%)}
+/* underwater light: slow rays from the surface and a rippling sheen */
+.swim .rays{position:absolute;inset:-20% -10% 0;pointer-events:none;
+  background:repeating-linear-gradient(98deg,transparent 0 6%,rgba(191,243,251,.10) 8%,transparent 11% 17%,rgba(191,243,251,.06) 19%,transparent 23% 30%);
+  -webkit-mask:linear-gradient(#000,transparent 75%);mask:linear-gradient(#000,transparent 75%);animation:sway 12s ease-in-out infinite alternate}
+@keyframes sway{to{transform:translateX(5vw) skewX(-3deg);opacity:.65}}
+.swim .floor{position:absolute;left:0;right:0;bottom:0;height:34%;pointer-events:none;
+  background:radial-gradient(60% 100% at 50% 100%,rgba(63,208,224,.16),transparent 70%),linear-gradient(transparent,rgba(1,8,11,.75))}
+.veil{opacity:min(1,calc(var(--hp,1) * 2.5))}   /* the side shading comes in as you leave the hero, so the big O is not dimmed */
+.swim .bg{display:none}.swim .wo{visibility:hidden}
+.swim canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.swim .word{position:absolute;fill:#a9e1ec;pointer-events:none;opacity:0;transition:opacity 1.1s ease,transform 1.4s cubic-bezier(.16,1,.3,1)}
+.swim .word.a{left:23.04vw;top:9svh;width:24.46vw;transform:translateX(-6vw)}          /* the R, behind the orca */
+/* the O is its own piece: on scroll it leaves the word and becomes the water orb */
+.swim .wo{position:absolute;left:1.5vw;top:9svh;width:21.54vw;pointer-events:none;will-change:transform,opacity}
+.swim .wo .word{position:static;display:block;width:100%;transform:translateX(-6vw)}
+.swim .word.b{right:1.5vw;bottom:5svh;width:46vw;fill:#f2f7f9;transform:translateX(6vw);mix-blend-mode:normal}  /* in front */
+.swim.in .word{opacity:1;transform:none}.swim.in .word.a,.swim.in .wo .word{opacity:.9}
+.swim .copy{position:absolute;left:2vw;bottom:5svh;z-index:5;max-width:44vw;opacity:0;transform:translateY(14px);transition:1s ease .5s}
+.swim.in .copy{opacity:1;transform:none}
+.swim .copy p{font-size:13px;line-height:1.45;color:#bcd6dc;max-width:30ch;margin-bottom:16px}
+.swim .copy h1{font:700 clamp(20px,2.5vw,38px)/1.02 Syne,sans-serif;letter-spacing:-.01em;text-transform:uppercase}
+.swim .copy a{display:inline-block;margin-top:18px;font:500 12px "Geist Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:#03141a;background:#a9e1ec;padding:11px 16px;border-radius:8px;text-decoration:none}
+.swim .hint{position:absolute;right:2vw;top:50%;z-index:5;font:400 10px "Geist Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:#8fb6bf;writing-mode:vertical-rl;opacity:.7}
+@media (max-width:760px){
+  .swim .hint{display:none}
+  .swim .word.a{left:calc(16px + 28.1vw);top:10svh;width:31.9vw}.swim .wo{left:16px;top:10svh;width:28.1vw}.swim .word.b{right:16px;bottom:31svh;width:60vw}
+  .swim .copy{left:16px;right:16px;bottom:4svh;max-width:none}.swim .copy h1{font-size:22px}.swim .copy p{margin-bottom:10px}.swim .copy a{margin-top:12px}.swim .copy p{font-size:13px}
+}
+@media (prefers-reduced-motion:reduce){.swim .rays{animation:none}}
+
+.swim .copy h1{transform:none;font-family:Syne,sans-serif}
+.hero .stick:has(.swim){opacity:1}
+.swim.fade>*:not(.wo){filter:opacity(clamp(0,calc(1 - var(--hp,0) * 3.2),1))}
+</style></head>
 <body>
 <canvas id="gl" aria-hidden="true"></canvas>
 <div class="veil"></div>
@@ -277,16 +313,17 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
 <main>
   <section class="ch hero" id="top">
     <div class="stick">
-      <p class="mono lead fade">Meet the Echo Engine, an AI content engine built around your brand. Run it yourself, or let us run it for you.</p>
-      <h1 class="h">
-        <span class="l"><span style="--i:0"><em>Acquire,</em></span></span>
-        <span class="l ind"><span style="--i:1">Engage &amp; Convert</span></span>
-        <span class="l ind"><span style="--i:2">Audiences Autonomously.</span></span>
-      </h1>
-      <div class="hcta fade">
-        <a class="talk solid" href="https://orcaagentics.xyz/echo/">Get the Echo Engine, $99/mo <span aria-hidden="true">&#8627;</span></a>
-        <a class="talk" href="#ways">Have us run it</a>
-      </div>
+<div class="swim" id="swim">
+  <div class="bg"><div class="rays"></div><div class="floor"></div></div>
+  <div class="wo"><svg class="word" viewBox="0 0 377 376.1" aria-hidden="true"><path d="M375.8 168.7l.9 11.5 .2 7.4 -.1 6.6 -.8 12.3 -1.6 12.2 -1.1 6.5 -1.2 5.6 -3.2 12 -2 6.2 -2.2 6.2 -2.8 6.9 -2.2 5 -10.7 4.9 -11.4 4.5 -11.6 4.1 -27.8 9 -15.1 5.6 -6.3 2.6 -6.9 3.1 -6.1 3 -5.9 3.3 -5.8 3.5 -5.7 3.7 -6.2 4.3 -6.7 5.1 -5.3 4.3 -7 6 -20.6 18.5 -9.3 8.1 -10.1 8.1 -10.2 7.3 -5.5-.6 -7.3-1.1 -6.5-1.1 -6.5-1.4 -11.1-3 -6.2-2 -6.2-2.2 -11.4-4.8 -6.7-3.2 -5.8-3 -10.6-6.3 -9.7-6.6 10.6-3.6 10-3.7 7.8-3.2 8.2-3.7 7.4-3.8 7.8-4.6 8.3-5.3 6.1-4.4 6.7 2.3 6 1.7 7 1.6 6.7 1.2 7.2 .8 7.8 .4 7.2 0 7.3-.4 7.2-.8 6.6-1.2 7.7-1.7 6.4-1.9 6.3-2.2 6.8-2.8 6.5-3.1 5.9-3.3 6.2-3.8 6.4-4.5 4.8-3.8 5.4-4.8 5.6-5.6 4.5-4.9 4.9-6.1 3.6-5 3.9-6.2 3.5-6.3 3.2-6.5 2.5-5.7 2.3-6.3 2.1-6.9 1.5-6 1.4-7 8.2-3.7 7.4-3.8 7.8-4.6 7-4.5 6.8-4.8 7.2-5.5 8.3-6.9 8.3-7.3zM96.4 24l10.2-5.3 9-4 10.7-4.2 9.4-3 11.1-2.9 9.7-1.9 9.8-1.4 11.5-1 9.8-.3 10.7 .3 11.5 .9 10.6 1.5 10.4 2.1 10.4 2.7 10.9 3.6 10 3.9 9.7 4.4 10.1 5.4 9.2 5.6 8.8 6.1 8.4 6.5 7.5 6.5 7.6 7.4 7.8 8.5 7.2 9 5.8 8 5.8 9 4.8 8.6 5.1 10.3 3.9 9.1 3.9 10.8 3 10.2 -17.4 15.5 -6.5 5.3 -5.4 4.2 -5.5 4.1 -6.9 4.6 -6.4 3.9 -6.2 3.5 -.7-8.1 -1.3-8.3 -1.6-7.7 -2.3-8 -2.8-7.9 -3.1-7.2 -4.1-8 -4-6.7 -4.4-6.5 -5.1-6.6 -5.2-5.9 -6.4-6.3 -5.9-5.1 -5.7-4.4 -6-4.1 -8.2-4.9 -7.5-3.7 -7.7-3.3 -8-2.7 -7-2 -7.6-1.7 -8.3-1.2 -8.3-.7 -8.4-.2 -7.9 .3 -8.8 1 -7.8 1.4 -7.6 1.8 -8 2.5 -8.3 3.2 -7.6 3.5 -6.9 3.7 -7.6 4.8 -5.9 4.3 -6.5 5.3 -5.7 5.3 -5.4 5.7 -5 6 -5.3 7.2 -4.2 6.6 -3.3 5.9 -3.6 7.5 -3.4 8.3 -2.4 7.4 -2 7.6 -1.5 7.7 -1.3 9.4 -.5 8.4 .1 8.4 .6 8.3 1.2 8.3 1.4 7.2 2 7.5 2.6 8 3.2 7.8 3.4 7 4.1 7.3 4.6 7 4.7 6.3 5.4 6.4 5.8 6 5.8 5.3 6.1 4.9 7.1 5 -6 3.6 -6.7 3.6 -6.1 3 -7.6 3.4 -7 2.9 -9.4 3.4 -19.8 6.6 -8-8.4 -6.3-7.5 -6.5-8.5 -6.4-9.6 -5.8-9.9 -4.8-9.6 -4.6-10.5 -3.4-9.3 -3.4-11 -2.5-10.4 -1.8-9.7 -1.4-11.4 -.7-9.8 -.2-12.4 .3-5.7 .4-6.6 1.1-9.8 1.8-10.5 2.4-10.4 3.2-11.1 3.9-10.8 4.6-10.6 4.7-9.6 5.4-9.2 5.3-8.3 5.8-8 7.3-8.9 7.3-7.9 7.6-7.4 8.1-7 7.8-6 9.5-6.5z" fill="#ffffff"/></svg></div>
+  <svg class="word a" viewBox="377 0 428 376.1" aria-hidden="true"><path d="M1095.1 20.2l6.7 .2 6.5 .3 6.4 .4 6.3 .6 6.2 .6 6 .8 6 .8 5.8 1 5.7 1.2 5.6 1.2 5.5 1.3 5.4 1.5 5.3 1.6 5.1 1.7 5 1.8 4.9 1.9 4.8 2 4.6 2.2 4.6 2.2 4.3 2.3 4.3 2.4 4.1 2.6 4 2.6 3.8 2.7 3.8 2.8 3.6 2.9 3.4 3.1 3.4 3.1 3.2 3.2 3 3.3 3 3.4 2.8 3.6 2.6 3.6 2.5 3.7 2.4 3.8 2.2 3.8 2.1 4 1.9 4.1 1.7 4.1 1.6 4.3 1.5 4.3 1.3 4.5 1.2 4.5 1 4.6 .9 4.7 .7 4.8 .6 4.9 -66 0 -.9-2.6 -.9-2.6 -3.1-7.4 -1.2-2.4 -1.3-2.3 -1.3-2.3 -1.4-2.2 -4.6-6.5 -1.7-2 -1.7-2.1 -1.8-1.9 -1.9-2 -1.9-1.8 -2-1.9 -2.1-1.7 -2.1-1.7 -2.3-1.7 -2.2-1.6 -2.4-1.5 -2.4-1.5 -7.7-4.1 -2.7-1.3 -2.7-1.2 -8.7-3.2 -3.1-1 -3.1-.9 -3.1-.8 -3.3-.8 -10.1-2 -3.6-.5 -3.6-.5 -3.6-.4 -3.8-.3 -3.8-.3 -3.9-.2 -3.9-.2 -4-.1 -14.2 .2 -4.9 .2 -4.9 .4 -4.8 .4 -4.7 .6 -4.6 .6 -4.5 .8 -4.5 .8 -4.4 1 -4.3 1 -4.2 1.2 -4.1 1.2 -4.1 1.3 -4 1.5 -3.9 1.5 -3.8 1.7 -3.8 1.7 -3.6 1.8 -3.4 2 -3.4 2 -3.3 2.1 -3.2 2.2 -3 2.3 -3 2.4 -2.8 2.5 -2.7 2.5 -2.6 2.7 -2.6 2.8 -2.3 2.8 -2.3 3 -2.2 3 -2.1 3.2 -1.9 3.2 -1.8 3.3 -1.7 3.5 -1.5 3.5 -1.4 3.6 -1.2 3.6 -1.2 3.8 -1 3.9 -.8 4 -.8 4 -.6 4.2 -.4 4.2 -.4 4.3 -.2 4.5 0 4.5 0 4.4 .2 4.4 .4 4.3 .4 4.2 .6 4.1 .8 4 .8 3.9 1 3.8 1.2 3.8 1.2 3.6 1.4 3.6 1.5 3.4 1.7 3.4 1.8 3.3 1.9 3.2 2.1 3.1 2.2 3 2.3 2.9 2.3 2.9 2.6 2.7 2.6 2.7 2.7 2.5 2.8 2.5 3 2.3 3 2.3 3.2 2.2 3.3 2.1 3.4 2 3.4 1.9 3.6 1.9 3.8 1.7 3.8 1.6 3.9 1.6 4 1.4 4.1 1.4 4.1 1.2 4.2 1.2 4.3 1 4.4 1 4.5 .8 4.5 .7 4.6 .7 4.7 .5 4.8 .5 4.9 .3 4.9 .3 5 .1 13.2 0 11.6-.7 11-1.2 10.3-1.8 9.6-2.3 9.1-2.9 8.4-3.5 7.8-3.8 7.2-4.4 6.6-4.9 6-5.4 5.5-5.8 4.8-6.2 4.3-6.5 3.7-6.8 1.1-2.4 1-2.4 1-2.4 .9-2.5 66 0 -.7 4.8 -.7 4.8 -1 4.6 -1 4.6 -1.2 4.4 -1.4 4.4 -1.5 4.3 -1.6 4.2 -1.8 4.1 -2 4 -2 4 -2.3 3.8 -2.3 3.8 -2.6 3.6 -2.6 3.6 -2.8 3.5 -3 3.4 -3 3.3 -3.2 3.1 -3.4 3.1 -3.4 3 -3.6 2.9 -3.7 2.8 -3.8 2.6 -4 2.6 -4.1 2.5 -4.2 2.4 -4.4 2.2 -4.5 2.2 -4.6 2.1 -4.7 1.9 -4.9 1.9 -5 1.7 -5.1 1.7 -5.3 1.5 -5.3 1.4 -5.5 1.3 -5.6 1.2 -5.7 1.1 -5.8 1 -5.9 .8 -6.1 .7 -6.1 .7 -6.3 .5 -6.4 .4 -6.5 .3 -6.7 .1 -6.7 .1 -5.7-.1 -5.6-.1 -5.5-.2 -5.5-.3 -5.4-.3 -5.4-.5 -5.3-.5 -5.2-.6 -5.2-.7 -15.1-2.6 -4.9-1 -4.9-1.2 -4.8-1.1 -4.8-1.3 -4.6-1.4 -4.6-1.4 -4.6-1.5 -4.4-1.6 -4.3-1.7 -4.3-1.8 -4.2-1.8 -4.1-1.9 -4-2 -4-2.1 -3.8-2.2 -3.8-2.3 -3.7-2.3 -3.6-2.4 -3.5-2.5 -3.5-2.6 -3.3-2.7 -3.3-2.7 -3.2-2.8 -3-2.9 -3-3 -2.9-3.1 -2.8-3.1 -2.7-3.3 -2.5-3.3 -2.5-3.4 -2.4-3.4 -2.4-3.6 -2.2-3.6 -2.1-3.7 -2-3.8 -1.9-3.9 -1.8-3.9 -1.7-4 -1.6-4.2 -1.5-4.2 -1.3-4.2 -1.3-4.4 -1.1-4.5 -1-4.5 -.8-4.6 -.8-4.7 -.7-4.8 -.5-4.9 -.4-4.9 -.3-5.1 -.2-5.1 0-5.2 0-5.2 .2-5.1 .3-5.1 .4-5 .5-4.8 .7-4.8 .8-4.8 .8-4.6 1-4.5 1.1-4.5 1.3-4.4 1.3-4.3 1.5-4.2 1.6-4.2 1.7-4 1.8-4 1.9-3.9 2-3.8 2.1-3.8 2.2-3.6 2.4-3.6 2.4-3.5 2.5-3.4 2.5-3.3 2.7-3.3 2.8-3.2 2.9-3.1 3-3 3-2.9 3.2-2.9 3.3-2.8 3.3-2.7 3.5-2.6 3.5-2.5 3.6-2.5 3.7-2.3 3.8-2.3 3.8-2.2 4-2.1 4-2.1 4.1-1.9 4.2-1.9 4.3-1.8 4.3-1.7 4.4-1.7 4.6-1.5 4.6-1.5 4.6-1.4 4.8-1.3 4.8-1.2 4.9-1.1 4.9-1.1 5-.9 5-.9 5.1-.8 15.7-1.9 5.4-.5 5.4-.3 5.5-.3 5.5-.2 5.6-.2 5.7 0zM686 26.7l4.6 .2 4.5 .2 13 1 4.2 .5 4.1 .6 11.9 2.3 3.8 1 3.8 1 10.7 3.4 3.4 1.4 3.4 1.4 3.2 1.5 3.1 1.6 3.1 1.7 2.9 1.7 2.9 1.9 2.7 2 2.7 2 2.5 2.1 2.5 2.3 2.4 2.3 2.2 2.4 2.2 2.5 2.1 2.6 2 2.6 1.9 2.8 1.7 2.9 1.6 2.9 1.6 3.1 1.4 3.1 1.2 3.3 1.2 3.3 1 3.5 .9 3.5 .8 3.6 .7 3.7 .5 3.9 .4 3.9 .3 4 .2 4.1 .1 4.2 0 2.8 -.1 2.8 -.2 2.8 -.2 2.7 -.3 2.6 -.3 2.6 -.4 2.5 -.5 2.4 -.5 2.4 -.6 2.4 -.7 2.3 -.7 2.2 -.8 2.2 -.8 2.2 -.9 2.1 -1 2 -1 2 -1.1 1.9 -1.1 1.9 -1.2 1.8 -1.2 1.8 -1.3 1.7 -1.3 1.7 -1.4 1.7 -1.4 1.6 -1.5 1.5 -1.5 1.6 -1.5 1.4 -1.6 1.4 -1.7 1.4 -1.7 1.3 -1.8 1.3 -1.8 1.2 -5.6 3.5 -7.9 4.1 -2 .9 -2.1 .9 -6.5 2.5 -2.3 .8 -2.2 .7 -7 1.9 -7.1 1.7 -6.3 1.2 13.8 1.5 3.3 .5 3.1 .5 3.1 .6 2.9 .6 8.3 2.1 2.6 .8 2.5 .9 2.4 1 2.4 1 2.2 1.1 2.2 1.1 2 1.2 2 1.3 1.9 1.4 1.8 1.4 1.7 1.5 1.6 1.5 1.6 1.7 1.4 1.6 1.4 1.8 1.3 1.9 1.2 2 1 2 1.1 2.2 .9 2.3 .8 2.4 .8 2.5 .6 2.6 .6 2.7 .5 2.8 .9 9 .1 3.3 .1 3.3 0 77 -66.5 0 0-72.5 -.3-6.7 -.6-6 -1.2-5.5 -1.6-4.9 -.6-1.5 -.7-1.5 -.7-1.3 -.8-1.4 -.9-1.2 -.9-1.2 -1-1.2 -1.1-1.1 -1.2-1.1 -1.2-1 -1.4-.9 -1.4-1 -1.5-.8 -1.6-.8 -1.6-.8 -1.7-.7 -1.9-.7 -1.8-.6 -2-.6 -2.1-.5 -2.1-.5 -2.3-.4 -2.4-.5 -2.5-.4 -11.1-1.2 -13-.8 -14.8-.2 -125.5 0 0 119.5 -66.5 0 0-323.5 219.5 0zM528.4 83.7l0 95 153 0 3.4-.1 3.4-.1 3.2-.3 3.1-.4 3.1-.4 2.9-.6 2.8-.7 2.8-.8 2.6-.9 2.5-1 2.4-1.1 2.3-1.2 2.2-1.3 2.1-1.4 2-1.6 1.9-1.6 1.8-1.7 1.7-1.8 1.5-1.9 1.5-2 1.3-2 1.2-2.1 1.1-2.1 1-2.3 .9-2.3 .7-2.4 .6-2.5 .6-2.5 .4-2.6 .2-2.7 .2-2.8 .1-2.8 -.1-2.7 -.2-2.6 -.2-2.6 -.4-2.5 -.6-2.3 -.6-2.3 -.7-2.3 -.9-2.1 -1-2 -1.1-2 -1.2-1.9 -1.3-1.8 -1.5-1.7 -1.5-1.7 -1.7-1.5 -1.8-1.5 -1.9-1.4 -2-1.3 -2.1-1.2 -2.2-1.1 -2.3-1.1 -2.4-.9 -2.5-.9 -2.6-.7 -2.8-.7 -2.8-.6 -2.9-.5 -3.1-.4 -3.1-.3 -3.2-.2 -3.4-.2 -3.4 0zM1510.4 85.7l-110.5 264.5 -72.5 0 141.5-323.5 83 0 143 323.5 -73.5 0z" fill="#ffffff"/></svg>
+  <canvas id="swimc"></canvas>
+  <svg class="word b" viewBox="883 0 812 376.1" aria-hidden="true"><path d="M375.8 168.7l.9 11.5 .2 7.4 -.1 6.6 -.8 12.3 -1.6 12.2 -1.1 6.5 -1.2 5.6 -3.2 12 -2 6.2 -2.2 6.2 -2.8 6.9 -2.2 5 -10.7 4.9 -11.4 4.5 -11.6 4.1 -27.8 9 -15.1 5.6 -6.3 2.6 -6.9 3.1 -6.1 3 -5.9 3.3 -5.8 3.5 -5.7 3.7 -6.2 4.3 -6.7 5.1 -5.3 4.3 -7 6 -20.6 18.5 -9.3 8.1 -10.1 8.1 -10.2 7.3 -5.5-.6 -7.3-1.1 -6.5-1.1 -6.5-1.4 -11.1-3 -6.2-2 -6.2-2.2 -11.4-4.8 -6.7-3.2 -5.8-3 -10.6-6.3 -9.7-6.6 10.6-3.6 10-3.7 7.8-3.2 8.2-3.7 7.4-3.8 7.8-4.6 8.3-5.3 6.1-4.4 6.7 2.3 6 1.7 7 1.6 6.7 1.2 7.2 .8 7.8 .4 7.2 0 7.3-.4 7.2-.8 6.6-1.2 7.7-1.7 6.4-1.9 6.3-2.2 6.8-2.8 6.5-3.1 5.9-3.3 6.2-3.8 6.4-4.5 4.8-3.8 5.4-4.8 5.6-5.6 4.5-4.9 4.9-6.1 3.6-5 3.9-6.2 3.5-6.3 3.2-6.5 2.5-5.7 2.3-6.3 2.1-6.9 1.5-6 1.4-7 8.2-3.7 7.4-3.8 7.8-4.6 7-4.5 6.8-4.8 7.2-5.5 8.3-6.9 8.3-7.3zM96.4 24l10.2-5.3 9-4 10.7-4.2 9.4-3 11.1-2.9 9.7-1.9 9.8-1.4 11.5-1 9.8-.3 10.7 .3 11.5 .9 10.6 1.5 10.4 2.1 10.4 2.7 10.9 3.6 10 3.9 9.7 4.4 10.1 5.4 9.2 5.6 8.8 6.1 8.4 6.5 7.5 6.5 7.6 7.4 7.8 8.5 7.2 9 5.8 8 5.8 9 4.8 8.6 5.1 10.3 3.9 9.1 3.9 10.8 3 10.2 -17.4 15.5 -6.5 5.3 -5.4 4.2 -5.5 4.1 -6.9 4.6 -6.4 3.9 -6.2 3.5 -.7-8.1 -1.3-8.3 -1.6-7.7 -2.3-8 -2.8-7.9 -3.1-7.2 -4.1-8 -4-6.7 -4.4-6.5 -5.1-6.6 -5.2-5.9 -6.4-6.3 -5.9-5.1 -5.7-4.4 -6-4.1 -8.2-4.9 -7.5-3.7 -7.7-3.3 -8-2.7 -7-2 -7.6-1.7 -8.3-1.2 -8.3-.7 -8.4-.2 -7.9 .3 -8.8 1 -7.8 1.4 -7.6 1.8 -8 2.5 -8.3 3.2 -7.6 3.5 -6.9 3.7 -7.6 4.8 -5.9 4.3 -6.5 5.3 -5.7 5.3 -5.4 5.7 -5 6 -5.3 7.2 -4.2 6.6 -3.3 5.9 -3.6 7.5 -3.4 8.3 -2.4 7.4 -2 7.6 -1.5 7.7 -1.3 9.4 -.5 8.4 .1 8.4 .6 8.3 1.2 8.3 1.4 7.2 2 7.5 2.6 8 3.2 7.8 3.4 7 4.1 7.3 4.6 7 4.7 6.3 5.4 6.4 5.8 6 5.8 5.3 6.1 4.9 7.1 5 -6 3.6 -6.7 3.6 -6.1 3 -7.6 3.4 -7 2.9 -9.4 3.4 -19.8 6.6 -8-8.4 -6.3-7.5 -6.5-8.5 -6.4-9.6 -5.8-9.9 -4.8-9.6 -4.6-10.5 -3.4-9.3 -3.4-11 -2.5-10.4 -1.8-9.7 -1.4-11.4 -.7-9.8 -.2-12.4 .3-5.7 .4-6.6 1.1-9.8 1.8-10.5 2.4-10.4 3.2-11.1 3.9-10.8 4.6-10.6 4.7-9.6 5.4-9.2 5.3-8.3 5.8-8 7.3-8.9 7.3-7.9 7.6-7.4 8.1-7 7.8-6 9.5-6.5z" fill="#ffffff"/><path d="M1095.1 20.2l6.7 .2 6.5 .3 6.4 .4 6.3 .6 6.2 .6 6 .8 6 .8 5.8 1 5.7 1.2 5.6 1.2 5.5 1.3 5.4 1.5 5.3 1.6 5.1 1.7 5 1.8 4.9 1.9 4.8 2 4.6 2.2 4.6 2.2 4.3 2.3 4.3 2.4 4.1 2.6 4 2.6 3.8 2.7 3.8 2.8 3.6 2.9 3.4 3.1 3.4 3.1 3.2 3.2 3 3.3 3 3.4 2.8 3.6 2.6 3.6 2.5 3.7 2.4 3.8 2.2 3.8 2.1 4 1.9 4.1 1.7 4.1 1.6 4.3 1.5 4.3 1.3 4.5 1.2 4.5 1 4.6 .9 4.7 .7 4.8 .6 4.9 -66 0 -.9-2.6 -.9-2.6 -3.1-7.4 -1.2-2.4 -1.3-2.3 -1.3-2.3 -1.4-2.2 -4.6-6.5 -1.7-2 -1.7-2.1 -1.8-1.9 -1.9-2 -1.9-1.8 -2-1.9 -2.1-1.7 -2.1-1.7 -2.3-1.7 -2.2-1.6 -2.4-1.5 -2.4-1.5 -7.7-4.1 -2.7-1.3 -2.7-1.2 -8.7-3.2 -3.1-1 -3.1-.9 -3.1-.8 -3.3-.8 -10.1-2 -3.6-.5 -3.6-.5 -3.6-.4 -3.8-.3 -3.8-.3 -3.9-.2 -3.9-.2 -4-.1 -14.2 .2 -4.9 .2 -4.9 .4 -4.8 .4 -4.7 .6 -4.6 .6 -4.5 .8 -4.5 .8 -4.4 1 -4.3 1 -4.2 1.2 -4.1 1.2 -4.1 1.3 -4 1.5 -3.9 1.5 -3.8 1.7 -3.8 1.7 -3.6 1.8 -3.4 2 -3.4 2 -3.3 2.1 -3.2 2.2 -3 2.3 -3 2.4 -2.8 2.5 -2.7 2.5 -2.6 2.7 -2.6 2.8 -2.3 2.8 -2.3 3 -2.2 3 -2.1 3.2 -1.9 3.2 -1.8 3.3 -1.7 3.5 -1.5 3.5 -1.4 3.6 -1.2 3.6 -1.2 3.8 -1 3.9 -.8 4 -.8 4 -.6 4.2 -.4 4.2 -.4 4.3 -.2 4.5 0 4.5 0 4.4 .2 4.4 .4 4.3 .4 4.2 .6 4.1 .8 4 .8 3.9 1 3.8 1.2 3.8 1.2 3.6 1.4 3.6 1.5 3.4 1.7 3.4 1.8 3.3 1.9 3.2 2.1 3.1 2.2 3 2.3 2.9 2.3 2.9 2.6 2.7 2.6 2.7 2.7 2.5 2.8 2.5 3 2.3 3 2.3 3.2 2.2 3.3 2.1 3.4 2 3.4 1.9 3.6 1.9 3.8 1.7 3.8 1.6 3.9 1.6 4 1.4 4.1 1.4 4.1 1.2 4.2 1.2 4.3 1 4.4 1 4.5 .8 4.5 .7 4.6 .7 4.7 .5 4.8 .5 4.9 .3 4.9 .3 5 .1 13.2 0 11.6-.7 11-1.2 10.3-1.8 9.6-2.3 9.1-2.9 8.4-3.5 7.8-3.8 7.2-4.4 6.6-4.9 6-5.4 5.5-5.8 4.8-6.2 4.3-6.5 3.7-6.8 1.1-2.4 1-2.4 1-2.4 .9-2.5 66 0 -.7 4.8 -.7 4.8 -1 4.6 -1 4.6 -1.2 4.4 -1.4 4.4 -1.5 4.3 -1.6 4.2 -1.8 4.1 -2 4 -2 4 -2.3 3.8 -2.3 3.8 -2.6 3.6 -2.6 3.6 -2.8 3.5 -3 3.4 -3 3.3 -3.2 3.1 -3.4 3.1 -3.4 3 -3.6 2.9 -3.7 2.8 -3.8 2.6 -4 2.6 -4.1 2.5 -4.2 2.4 -4.4 2.2 -4.5 2.2 -4.6 2.1 -4.7 1.9 -4.9 1.9 -5 1.7 -5.1 1.7 -5.3 1.5 -5.3 1.4 -5.5 1.3 -5.6 1.2 -5.7 1.1 -5.8 1 -5.9 .8 -6.1 .7 -6.1 .7 -6.3 .5 -6.4 .4 -6.5 .3 -6.7 .1 -6.7 .1 -5.7-.1 -5.6-.1 -5.5-.2 -5.5-.3 -5.4-.3 -5.4-.5 -5.3-.5 -5.2-.6 -5.2-.7 -15.1-2.6 -4.9-1 -4.9-1.2 -4.8-1.1 -4.8-1.3 -4.6-1.4 -4.6-1.4 -4.6-1.5 -4.4-1.6 -4.3-1.7 -4.3-1.8 -4.2-1.8 -4.1-1.9 -4-2 -4-2.1 -3.8-2.2 -3.8-2.3 -3.7-2.3 -3.6-2.4 -3.5-2.5 -3.5-2.6 -3.3-2.7 -3.3-2.7 -3.2-2.8 -3-2.9 -3-3 -2.9-3.1 -2.8-3.1 -2.7-3.3 -2.5-3.3 -2.5-3.4 -2.4-3.4 -2.4-3.6 -2.2-3.6 -2.1-3.7 -2-3.8 -1.9-3.9 -1.8-3.9 -1.7-4 -1.6-4.2 -1.5-4.2 -1.3-4.2 -1.3-4.4 -1.1-4.5 -1-4.5 -.8-4.6 -.8-4.7 -.7-4.8 -.5-4.9 -.4-4.9 -.3-5.1 -.2-5.1 0-5.2 0-5.2 .2-5.1 .3-5.1 .4-5 .5-4.8 .7-4.8 .8-4.8 .8-4.6 1-4.5 1.1-4.5 1.3-4.4 1.3-4.3 1.5-4.2 1.6-4.2 1.7-4 1.8-4 1.9-3.9 2-3.8 2.1-3.8 2.2-3.6 2.4-3.6 2.4-3.5 2.5-3.4 2.5-3.3 2.7-3.3 2.8-3.2 2.9-3.1 3-3 3-2.9 3.2-2.9 3.3-2.8 3.3-2.7 3.5-2.6 3.5-2.5 3.6-2.5 3.7-2.3 3.8-2.3 3.8-2.2 4-2.1 4-2.1 4.1-1.9 4.2-1.9 4.3-1.8 4.3-1.7 4.4-1.7 4.6-1.5 4.6-1.5 4.6-1.4 4.8-1.3 4.8-1.2 4.9-1.1 4.9-1.1 5-.9 5-.9 5.1-.8 15.7-1.9 5.4-.5 5.4-.3 5.5-.3 5.5-.2 5.6-.2 5.7 0zM686 26.7l4.6 .2 4.5 .2 13 1 4.2 .5 4.1 .6 11.9 2.3 3.8 1 3.8 1 10.7 3.4 3.4 1.4 3.4 1.4 3.2 1.5 3.1 1.6 3.1 1.7 2.9 1.7 2.9 1.9 2.7 2 2.7 2 2.5 2.1 2.5 2.3 2.4 2.3 2.2 2.4 2.2 2.5 2.1 2.6 2 2.6 1.9 2.8 1.7 2.9 1.6 2.9 1.6 3.1 1.4 3.1 1.2 3.3 1.2 3.3 1 3.5 .9 3.5 .8 3.6 .7 3.7 .5 3.9 .4 3.9 .3 4 .2 4.1 .1 4.2 0 2.8 -.1 2.8 -.2 2.8 -.2 2.7 -.3 2.6 -.3 2.6 -.4 2.5 -.5 2.4 -.5 2.4 -.6 2.4 -.7 2.3 -.7 2.2 -.8 2.2 -.8 2.2 -.9 2.1 -1 2 -1 2 -1.1 1.9 -1.1 1.9 -1.2 1.8 -1.2 1.8 -1.3 1.7 -1.3 1.7 -1.4 1.7 -1.4 1.6 -1.5 1.5 -1.5 1.6 -1.5 1.4 -1.6 1.4 -1.7 1.4 -1.7 1.3 -1.8 1.3 -1.8 1.2 -5.6 3.5 -7.9 4.1 -2 .9 -2.1 .9 -6.5 2.5 -2.3 .8 -2.2 .7 -7 1.9 -7.1 1.7 -6.3 1.2 13.8 1.5 3.3 .5 3.1 .5 3.1 .6 2.9 .6 8.3 2.1 2.6 .8 2.5 .9 2.4 1 2.4 1 2.2 1.1 2.2 1.1 2 1.2 2 1.3 1.9 1.4 1.8 1.4 1.7 1.5 1.6 1.5 1.6 1.7 1.4 1.6 1.4 1.8 1.3 1.9 1.2 2 1 2 1.1 2.2 .9 2.3 .8 2.4 .8 2.5 .6 2.6 .6 2.7 .5 2.8 .9 9 .1 3.3 .1 3.3 0 77 -66.5 0 0-72.5 -.3-6.7 -.6-6 -1.2-5.5 -1.6-4.9 -.6-1.5 -.7-1.5 -.7-1.3 -.8-1.4 -.9-1.2 -.9-1.2 -1-1.2 -1.1-1.1 -1.2-1.1 -1.2-1 -1.4-.9 -1.4-1 -1.5-.8 -1.6-.8 -1.6-.8 -1.7-.7 -1.9-.7 -1.8-.6 -2-.6 -2.1-.5 -2.1-.5 -2.3-.4 -2.4-.5 -2.5-.4 -11.1-1.2 -13-.8 -14.8-.2 -125.5 0 0 119.5 -66.5 0 0-323.5 219.5 0zM528.4 83.7l0 95 153 0 3.4-.1 3.4-.1 3.2-.3 3.1-.4 3.1-.4 2.9-.6 2.8-.7 2.8-.8 2.6-.9 2.5-1 2.4-1.1 2.3-1.2 2.2-1.3 2.1-1.4 2-1.6 1.9-1.6 1.8-1.7 1.7-1.8 1.5-1.9 1.5-2 1.3-2 1.2-2.1 1.1-2.1 1-2.3 .9-2.3 .7-2.4 .6-2.5 .6-2.5 .4-2.6 .2-2.7 .2-2.8 .1-2.8 -.1-2.7 -.2-2.6 -.2-2.6 -.4-2.5 -.6-2.3 -.6-2.3 -.7-2.3 -.9-2.1 -1-2 -1.1-2 -1.2-1.9 -1.3-1.8 -1.5-1.7 -1.5-1.7 -1.7-1.5 -1.8-1.5 -1.9-1.4 -2-1.3 -2.1-1.2 -2.2-1.1 -2.3-1.1 -2.4-.9 -2.5-.9 -2.6-.7 -2.8-.7 -2.8-.6 -2.9-.5 -3.1-.4 -3.1-.3 -3.2-.2 -3.4-.2 -3.4 0zM1510.4 85.7l-110.5 264.5 -72.5 0 141.5-323.5 83 0 143 323.5 -73.5 0z" fill="#ffffff"/></svg>
+  
+  <div class="copy"><p>Meet Echo. The engine that plans, writes and replies for your brand, built around how you sound.</p>
+    <h1>Acquire, engage &amp; convert<br>audiences autonomously</h1><a href="https://orcaagentics.xyz/echo/">Meet the Echo Engine →</a></div>
+  <div class="hint">Move to say hi · click for a spin</div>
+</div>
     </div>
   </section>
 
@@ -448,7 +485,7 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <script type="module">
 import * as THREE from 'three';
 const root=document.documentElement; root.classList.add('js');
@@ -618,6 +655,10 @@ const lc=document.createElement('canvas');lc.width=lc.height=512;{const c=lc.get
   c.shadowColor='rgba(169,225,236,1)';c.shadowBlur=60;c.fillStyle='#fff';const p=new Path2D(SYM);c.fill(p);c.shadowBlur=20;c.fill(p);}
 const logo=new THREE.Mesh(new THREE.PlaneGeometry(5.6,5.6),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(lc),transparent:true,blending:THREE.AdditiveBlending,depthTest:false,depthWrite:false}));
 logo.renderOrder=3;orb.add(logo);
+const fc=document.createElement('canvas');fc.width=fc.height=1024;{const c=fc.getContext('2d');c.scale(2,2);c.translate(56,56);c.scale(400/377,400/377);c.fillStyle='#f2f7f9';c.fill(new Path2D(SYM));}
+const ft=new THREE.CanvasTexture(fc);ft.colorSpace=THREE.SRGBColorSpace;ft.anisotropy=8;
+const flat=new THREE.Mesh(new THREE.PlaneGeometry(5.6,5.6),new THREE.MeshBasicMaterial({map:ft,transparent:true,depthTest:false,depthWrite:false,toneMapped:false,fog:false}));
+flat.renderOrder=4;flat.visible=false;orb.add(flat);
 
 /* Choreography: orb [x,y,scale,dim] per chapter, in view-plane units (portrait set below) */
 const D=[[10,2.6,.95,1],[15,16,1.7,.7],[17,12.5,1.3,.8],[-15,13.5,1.5,.85],[16,10,1.4,.85],[-18,10,1.5,.85],[17,14,1.3,.7],[0,7.8,.6,1]];
@@ -631,27 +672,187 @@ function resize(){const w=innerWidth,h=innerHeight,t=clamp((h/w-1.78)/.38);P[0]=
 addEventListener('resize',resize);resize();addEventListener('load',measure);
 let lenis=null;if(!reduce&&window.Lenis){lenis=new Lenis({lerp:.085,wheelMultiplier:.9});lenis.on('scroll',e=>vel=e.velocity);}
 const look=new THREE.Vector3(),clock=new THREE.Clock(),N=D.length-1;
+const SWIM=$('#swim'),WO=$('#swim .wo svg'),SYMR=2.1875;   // SYMR: radius of the mark inside the orb
+const CR={l:0,t:0,w:1,h:1},toWorld=(x,y,o)=>{o.set((x-CR.l)/CR.w*2-1,1-(y-CR.t)/CR.h*2,.5).unproject(camera).sub(camera.position);return o.multiplyScalar(-camera.position.z/o.z).add(camera.position);};
+const s5=x=>x*x*x*(x*(x*6-15)+10),wc=new THREE.Vector3(),we=new THREE.Vector3();let woA=0;
 function frame(now){
   lenis&&lenis.raf(now);
   const time=clock.getElapsedTime();Tm.value=time;scene.children[0].material.uniforms.uTime.value=time;
   const target=stageAt(scrollY);cur+=reduce?target-cur:(target-cur)*.06;
-  const K=mobile()?P:D,i=Math.min(Math.floor(cur),N-1),f=sm(clamp(cur-i)),a=K[i],b=K[i+1],L=(j)=>a[j]+(b[j]-a[j])*f;
+  const K=mobile()?P:D,i=Math.min(Math.floor(cur),N-1),f=sm(clamp(cur-i)),b=K[i+1];let a=K[i];const L=(j)=>a[j]+(b[j]-a[j])*f;
   // camera sinks slowly as you go deeper
   const depth=cur/N;cmx+=(mx-cmx)*.04;cmy+=(my-cmy)*.04;
   camera.position.set(cmx*1.6,9-4.5*depth-cmy*.8,32);look.set(0,8.6-4.5*depth,0);camera.lookAt(look);
-  const dist=mobile()?1.18:1;orb.position.set(look.x+L(0)*dist,look.y+L(1),0);
+  const dist=mobile()?1.18:1;
+  // hero: the O of the wordmark is drawn here, in the water scene, so it can turn into the orb with nothing to line up
+  const morph=WO&&cur<1;
+  if(morph){camera.updateMatrixWorld();const cr=renderer.domElement.getBoundingClientRect();CR.l=cr.left;CR.t=cr.top;CR.w=cr.width;CR.h=cr.height;
+    const o=WO.getBoundingClientRect(),sr=SWIM.getBoundingClientRect(),ox=o.left+o.width/2,oy=o.top+o.height/2-Math.min(0,sr.top);   // holds its place if the hero scrolls away under it
+    toWorld(ox,oy,wc);toWorld(ox+o.width/2,oy,we);a=[(wc.x-look.x)/dist,wc.y-look.y,wc.distanceTo(we)/SYMR,K[1][3]];
+    if(scrollY<2)woA=+getComputedStyle(WO).opacity;}
+  orb.position.set(look.x+L(0)*dist,look.y+L(1),0);
   orb.scale.setScalar(L(2));U.uDim.value=L(3);halo.material.opacity=.55*L(3);logo.material.opacity=L(3);
   sphere.rotation.y=time*.08+cmx*.6;sphere.rotation.x=Math.sin(time*.2)*.15-cmy*.4;
   logo.rotation.z=Math.sin(time*.3)*.04;logo.position.x=cmx*.5;logo.position.y=-cmy*.3;
   const v=reduce?0:Math.max(-40,Math.min(40,vel));root.style.setProperty('--v',v.toFixed(2));
-  if(!reduce){const hp=clamp(scrollY/innerHeight);root.style.setProperty('--hp',hp.toFixed(3));root.style.setProperty('--mx',cmx.toFixed(3));root.style.setProperty('--my',cmy.toFixed(3));
-    orb.scale.multiplyScalar(1+hp*.35);near.position.y=cur*7;near.position.x=-cmx*2;}
+  const hp=clamp(scrollY/innerHeight);
+  if(!reduce){root.style.setProperty('--hp',hp.toFixed(3));root.style.setProperty('--mx',cmx.toFixed(3));root.style.setProperty('--my',cmy.toFixed(3));near.position.y=cur*7;near.position.x=-cmx*2;}
+  window.__hp=hp;SWIM&&SWIM.classList.toggle('fade',hp>0);
+  if(WO){const g=clamp(cur),fill=s5(clamp(g/.3)),grow=s5(clamp((g-.06)/.74)),swap=s5(clamp((g-.3)/.45));
+    // water wells up inside the O, the sphere swells out past it, and the flat O melts into the glowing mark
+    orb.scale.multiplyScalar(1+hp*.35*grow);
+    sphere.visible=fill>0;sphere.scale.setScalar(SYMR/5+(1-SYMR/5)*grow);U.uDim.value*=fill;halo.material.opacity*=grow;logo.material.opacity*=swap;
+    logo.position.multiplyScalar(grow);logo.rotation.z*=grow;flat.position.copy(logo.position);flat.rotation.z=logo.rotation.z;
+    flat.visible=swap<1;flat.material.opacity=woA*(1-swap);}
+  else if(!reduce)orb.scale.multiplyScalar(1+hp*.35);
   rays.forEach(r=>r.rotation.set(0,Math.atan2(camera.position.x-r.position.x,camera.position.z-r.position.z),r.userData.lean,'YXZ'));
   const s=snow.geometry.attributes.position;for(let k=0;k<SN;k++){let y=s.getY(k)+.006+Math.abs(v)*.001;if(y>45)y=-5;s.setY(k,y);}s.needsUpdate=true;
-  renderer.render(scene,camera);requestAnimationFrame(frame);
+  renderer.render(scene,camera);
+  requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
 }
 </script>
-</body>
+<script type="module">
+import * as THREE from 'three';
+import {SVGLoader} from 'three/addons/loaders/SVGLoader.js';
+const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const cv=document.getElementById('swimc'),hero=document.getElementById('swim');
+const r=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});r.setPixelRatio(Math.min(devicePixelRatio,1.5));
+r.toneMapping=THREE.ACESFilmicToneMapping;r.toneMappingExposure=1.05;
+const sc=new THREE.Scene();const cam=new THREE.PerspectiveCamera(30,1,.1,200);
+const V=(x,y,z)=>new THREE.Vector3(x,y,z),LED=new THREE.Color(0x9fe3ef);
+sc.fog=new THREE.FogExp2(0x0a3a47,.045);
+// studio reflections + lights (same rig as the mascot renders)
+{const es=new THREE.Scene();const pnl=(w,h,col,k,pos)=>{const m=new THREE.Mesh(new THREE.CircleGeometry(1,48).scale(w/2,h/2,1),new THREE.MeshBasicMaterial({color:new THREE.Color(col).multiplyScalar(k),side:THREE.DoubleSide}));m.position.set(...pos);m.lookAt(0,0,0);es.add(m);};
+ pnl(10,4,0xdff7fb,3.2,[0,9,-3.5]);pnl(9,6,0x9fdfea,.55,[0,3,9]);pnl(1,9,0xbfeff7,2.2,[-7,2,4]);pnl(1,9,0xbfeff7,2,[7,2,4]);pnl(6,2,0x2a8ea0,1.5,[0,1,-8]);pnl(8,1,0x9fdfea,1.2,[0,-3,6]);
+ sc.environment=new THREE.PMREMGenerator(r).fromScene(es,.02).texture;}
+const key=new THREE.SpotLight(0xd6f6fb,14,0,.6,1,1.2);key.position.set(2.5,8,-1.5);key.target.position.set(0,1.2,0);sc.add(key,key.target);
+const fill=new THREE.DirectionalLight(0x7fd3e2,1.2);fill.position.set(-7,2.5,3);sc.add(fill);
+const rim=new THREE.DirectionalLight(0xbff3fb,1.2);rim.position.set(0,4,-6);sc.add(rim);sc.add(new THREE.HemisphereLight(0x3aa3b5,0x02121a,.8));
+
+// ---------- the Orca bot (from claude/mascot3.html, bot finish)
+const RC=new THREE.Raycaster();
+const onSurf=(mesh,x,y)=>{RC.set(V(x,y,5),V(0,0,-1));const h=RC.intersectObject(mesh,false)[0];return h?h.point.clone():V(x,y,.6);};
+function bodyGeo(){const pr=[[.07,-.2],[.11,-.07],[.27,.1],[.55,.4],[.75,.76],[.86,1.12],[.9,1.5],[.88,1.84],[.8,2.12],[.64,2.35],[.38,2.5],[.001,2.55]];
+ const pts=new THREE.SplineCurve(pr.map(([r,y])=>new THREE.Vector2(r,y))).getPoints(160);pts.sort((a,b)=>a.y-b.y);pts[0].x=Math.max(pts[0].x,.001);
+ const g=new THREE.LatheGeometry(pts,120);g.rotateY(Math.PI);g.scale(1,1,.9);g.computeVertexNormals();return g;}
+function bodyMat(){const m=new THREE.MeshPhysicalMaterial({color:0xffffff,roughness:.3,metalness:.35,clearcoat:.9,clearcoatRoughness:.15,envMapIntensity:.9});
+ const U={jaw:{value:0},dk:{value:new THREE.Color(0x161f26)},lt:{value:new THREE.Color(0xe8f0f3)},led:{value:LED}};m.userData.U=U;
+ m.onBeforeCompile=sh=>{Object.assign(sh.uniforms,U);
+  sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vOP;varying vec3 vON;').replace('#include <begin_vertex>','#include <begin_vertex>\nvOP=position;vON=normal;');
+  sh.fragmentShader=sh.fragmentShader.replace('#include <common>',`#include <common>
+uniform float jaw;uniform vec3 dk;uniform vec3 lt;uniform vec3 led;varying vec3 vOP;varying vec3 vON;
+float bibM(vec3 p,vec3 n){float front=smoothstep(.05,.25,n.z);float top=1.5+.12*pow(p.x/.72,2.);float w=.76*sqrt(clamp((p.y-.36)/1.2,0.,1.));
+ return front*smoothstep(.012,-.012,p.y-top)*smoothstep(.012,-.012,abs(p.x)-w);}
+float mouthLine(vec3 p,vec3 n){float my=1.4-.07*(1.-pow(p.x/.2,2.));return smoothstep(.014,.005,abs(p.y-my))*step(abs(p.x),.2)*step(.3,n.z);}
+float mouthOpen(vec3 p,vec3 n,float j){float my=1.4-.07*(1.-pow(p.x/.2,2.));float op=j*.09*sqrt(max(0.,1.-pow(p.x/.17,2.)));float d=p.y-(my-op*.5);return smoothstep(op*.5+.006,op*.5-.003,abs(d))*step(.004,op)*step(.3,n.z);}
+float visorE(vec3 p){vec2 d=(p.xy-vec2(0.,1.97))/vec2(.56,.2);return pow(abs(d.x),2.6)+pow(abs(d.y),2.6);}
+float collarM(vec3 p,vec3 n){float top=1.5+.12*pow(p.x/.72,2.);return smoothstep(.022,.006,abs(p.y-top))*smoothstep(.0,.2,n.z)*step(abs(p.x),.8);}`)
+  .replace('#include <color_fragment>',`#include <color_fragment>
+ vec3 nn=normalize(vON);float b=bibM(vOP,nn);vec3 base=mix(dk,lt,b);
+ base=mix(base,led,mouthOpen(vOP,nn,jaw));
+ base=mix(base,vec3(.012,.02,.026),smoothstep(1.06,.94,visorE(vOP))*smoothstep(.0,.2,nn.z));
+ diffuseColor.rgb*=base;`)
+  .replace('#include <emissivemap_fragment>',`#include <emissivemap_fragment>
+ {vec3 n2=normalize(vON);totalEmissiveRadiance+=led*2.4*(mouthOpen(vOP,n2,jaw)+mouthLine(vOP,n2)*(1.-step(.02,jaw)));
+  totalEmissiveRadiance+=led*2.2*collarM(vOP,n2);
+  totalEmissiveRadiance+=led*.9*smoothstep(.12,.0,abs(visorE(vOP)-1.))*smoothstep(.0,.2,n2.z);}`);};
+ return m;}
+function flukeGeo(){const s=new THREE.Shape();s.moveTo(0,0);s.bezierCurveTo(.1,.08,.3,.3,.56,.34);s.bezierCurveTo(.46,.16,.28,.05,.1,0);s.bezierCurveTo(.28,-.05,.46,-.16,.56,-.34);s.bezierCurveTo(.3,-.3,.1,-.08,0,0);
+ const g=new THREE.ExtrudeGeometry(s,{depth:.05,bevelEnabled:true,bevelThickness:.035,bevelSize:.035,bevelSegments:6,curveSegments:32});g.translate(0,0,-.025);g.rotateZ(-Math.PI/2);return g;}
+function dorsalGeo(){const s=new THREE.Shape();s.moveTo(0,-.32);s.bezierCurveTo(.22,-.24,.42,-.04,.56,.26);s.bezierCurveTo(.32,.14,.14,.2,0,.32);s.closePath();
+ const g=new THREE.ExtrudeGeometry(s,{depth:.07,bevelEnabled:true,bevelThickness:.045,bevelSize:.045,bevelSegments:8,curveSegments:32});g.translate(0,0,-.035);g.rotateY(Math.PI/2);return g;}
+const glowC=(k)=>new THREE.MeshBasicMaterial({color:LED.clone().multiplyScalar(k),toneMapped:false});
+function dotTex(){const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');const g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.4,'rgba(255,255,255,.35)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,64,64);return new THREE.CanvasTexture(c);}
+function bubTex(){const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');const g=x.createRadialGradient(64,64,40,64,64,62);g.addColorStop(0,'rgba(200,245,255,0)');g.addColorStop(.75,'rgba(200,245,255,.25)');g.addColorStop(.92,'rgba(230,252,255,.9)');g.addColorStop(1,'rgba(230,252,255,0)');
+ x.fillStyle=g;x.beginPath();x.arc(64,64,62,0,7);x.fill();x.fillStyle='rgba(255,255,255,.9)';x.beginPath();x.ellipse(46,42,12,7,-.6,0,7);x.fill();return new THREE.CanvasTexture(c);}
+const DT=dotTex(),BT=bubTex();
+const halo=(parent,pos,s,o=.55)=>{const m=new THREE.Sprite(new THREE.SpriteMaterial({map:DT,color:0x8fe6f2,transparent:true,opacity:o,depthWrite:false,blending:THREE.AdditiveBlending}));m.position.copy(pos);m.scale.setScalar(s);parent.add(m);return m;};
+
+const ORCA=new THREE.Group(),tilt=new THREE.Group(),inner=new THREE.Group();sc.add(ORCA);ORCA.add(tilt);tilt.add(inner);inner.position.y=-1.25;   // pivot at the belly
+const bm=bodyMat(),body=new THREE.Mesh(bodyGeo(),bm);inner.add(body);body.updateMatrixWorld();
+const fm=new THREE.MeshPhysicalMaterial({color:0x161f26,roughness:.3,metalness:.35,clearcoat:.9,clearcoatRoughness:.15,envMapIntensity:.9});
+{RC.set(V(0,1.75,-5),V(0,0,1));const dh=RC.intersectObject(body,false)[0];const dor=new THREE.Mesh(dorsalGeo(),fm);dor.position.copy(dh?dh.point:V(0,1.75,-.7));dor.position.z+=.05;dor.rotation.y=Math.PI;dor.scale.setScalar(1.15);inner.add(dor);}
+const fl=new THREE.Mesh(flukeGeo(),fm);fl.position.set(0,-.16,0);fl.scale.set(1.9,.36,1.1);inner.add(fl);
+const pad=new THREE.SphereGeometry(1,40,20);pad.scale(.42,.09,.2);pad.translate(.34,0,0);
+const pivL=new THREE.Group(),pivR=new THREE.Group();{const pL=new THREE.Mesh(pad,fm),pR=new THREE.Mesh(pad,fm);pL.rotation.y=Math.PI;pivL.add(pL);pivR.add(pR);
+ const fp=onSurf(body,.78,1.1);pivL.position.set(-fp.x*.95,1.1,fp.z*.6);pivR.position.set(fp.x*.95,1.1,fp.z*.6);inner.add(pivL,pivR);}
+const eyes=[-.21,.21].map(x=>{const p=onSurf(body,x,1.95);const e=new THREE.Group();e.position.copy(p);e.lookAt(p.clone().add(V(x*.5,.1,1)));
+ const d=new THREE.Mesh(new THREE.CapsuleGeometry(.05,.07,8,24),glowC(3));d.scale.z=.35;e.add(d);halo(e,V(0,0,.05),.42,.5);inner.add(e);return e;});
+{const mm=new THREE.MeshPhysicalMaterial({color:0x8fa3ad,metalness:1,roughness:.25,clearcoat:1});
+ const ant=new THREE.Mesh(new THREE.CylinderGeometry(.02,.02,.3,12),mm);ant.position.set(.16,2.7,-.05);ant.rotation.z=-.25;inner.add(ant);
+ const tip=new THREE.Mesh(new THREE.SphereGeometry(.05,16,12),glowC(3));tip.position.set(.2,2.85,-.05);inner.add(tip);halo(inner,tip.position,.55,.7);
+ [-1,1].forEach(sx=>{const p=onSurf(body,sx*.84,1.96);const ear=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.07,40),mm);ear.position.set(sx*(p.x>0?p.x:.84),1.96,p.z-.06);ear.rotation.z=Math.PI/2;ear.rotation.y=-sx*.35;inner.add(ear);
+  const rg=new THREE.Mesh(new THREE.TorusGeometry(.085,.016,12,48),glowC(2.4));rg.position.copy(ear.position);rg.position.x+=sx*.04;rg.rotation.y=Math.PI/2-sx*.35;inner.add(rg);});
+ // chest: the real Orca mark
+ const shapes=[];new SVGLoader().parse('<svg xmlns="http://www.w3.org/2000/svg"><path d="M375.8 168.7l.9 11.5 .2 7.4 -.1 6.6 -.8 12.3 -1.6 12.2 -1.1 6.5 -1.2 5.6 -3.2 12 -2 6.2 -2.2 6.2 -2.8 6.9 -2.2 5 -10.7 4.9 -11.4 4.5 -11.6 4.1 -27.8 9 -15.1 5.6 -6.3 2.6 -6.9 3.1 -6.1 3 -5.9 3.3 -5.8 3.5 -5.7 3.7 -6.2 4.3 -6.7 5.1 -5.3 4.3 -7 6 -20.6 18.5 -9.3 8.1 -10.1 8.1 -10.2 7.3 -5.5-.6 -7.3-1.1 -6.5-1.1 -6.5-1.4 -11.1-3 -6.2-2 -6.2-2.2 -11.4-4.8 -6.7-3.2 -5.8-3 -10.6-6.3 -9.7-6.6 10.6-3.6 10-3.7 7.8-3.2 8.2-3.7 7.4-3.8 7.8-4.6 8.3-5.3 6.1-4.4 6.7 2.3 6 1.7 7 1.6 6.7 1.2 7.2 .8 7.8 .4 7.2 0 7.3-.4 7.2-.8 6.6-1.2 7.7-1.7 6.4-1.9 6.3-2.2 6.8-2.8 6.5-3.1 5.9-3.3 6.2-3.8 6.4-4.5 4.8-3.8 5.4-4.8 5.6-5.6 4.5-4.9 4.9-6.1 3.6-5 3.9-6.2 3.5-6.3 3.2-6.5 2.5-5.7 2.3-6.3 2.1-6.9 1.5-6 1.4-7 8.2-3.7 7.4-3.8 7.8-4.6 7-4.5 6.8-4.8 7.2-5.5 8.3-6.9 8.3-7.3zM96.4 24l10.2-5.3 9-4 10.7-4.2 9.4-3 11.1-2.9 9.7-1.9 9.8-1.4 11.5-1 9.8-.3 10.7 .3 11.5 .9 10.6 1.5 10.4 2.1 10.4 2.7 10.9 3.6 10 3.9 9.7 4.4 10.1 5.4 9.2 5.6 8.8 6.1 8.4 6.5 7.5 6.5 7.6 7.4 7.8 8.5 7.2 9 5.8 8 5.8 9 4.8 8.6 5.1 10.3 3.9 9.1 3.9 10.8 3 10.2 -17.4 15.5 -6.5 5.3 -5.4 4.2 -5.5 4.1 -6.9 4.6 -6.4 3.9 -6.2 3.5 -.7-8.1 -1.3-8.3 -1.6-7.7 -2.3-8 -2.8-7.9 -3.1-7.2 -4.1-8 -4-6.7 -4.4-6.5 -5.1-6.6 -5.2-5.9 -6.4-6.3 -5.9-5.1 -5.7-4.4 -6-4.1 -8.2-4.9 -7.5-3.7 -7.7-3.3 -8-2.7 -7-2 -7.6-1.7 -8.3-1.2 -8.3-.7 -8.4-.2 -7.9 .3 -8.8 1 -7.8 1.4 -7.6 1.8 -8 2.5 -8.3 3.2 -7.6 3.5 -6.9 3.7 -7.6 4.8 -5.9 4.3 -6.5 5.3 -5.7 5.3 -5.4 5.7 -5 6 -5.3 7.2 -4.2 6.6 -3.3 5.9 -3.6 7.5 -3.4 8.3 -2.4 7.4 -2 7.6 -1.5 7.7 -1.3 9.4 -.5 8.4 .1 8.4 .6 8.3 1.2 8.3 1.4 7.2 2 7.5 2.6 8 3.2 7.8 3.4 7 4.1 7.3 4.6 7 4.7 6.3 5.4 6.4 5.8 6 5.8 5.3 6.1 4.9 7.1 5 -6 3.6 -6.7 3.6 -6.1 3 -7.6 3.4 -7 2.9 -9.4 3.4 -19.8 6.6 -8-8.4 -6.3-7.5 -6.5-8.5 -6.4-9.6 -5.8-9.9 -4.8-9.6 -4.6-10.5 -3.4-9.3 -3.4-11 -2.5-10.4 -1.8-9.7 -1.4-11.4 -.7-9.8 -.2-12.4 .3-5.7 .4-6.6 1.1-9.8 1.8-10.5 2.4-10.4 3.2-11.1 3.9-10.8 4.6-10.6 4.7-9.6 5.4-9.2 5.3-8.3 5.8-8 7.3-8.9 7.3-7.9 7.6-7.4 8.1-7 7.8-6 9.5-6.5z"/></svg>').paths.forEach(p=>SVGLoader.createShapes(p).forEach(s=>shapes.push(s)));
+ const lg=new THREE.ExtrudeGeometry(shapes,{depth:16,bevelEnabled:true,bevelThickness:5,bevelSize:4,bevelSegments:3,curveSegments:32});lg.center();lg.rotateX(Math.PI);lg.scale(.3/400,.3/400,.3/400);
+ const lm=new THREE.Mesh(lg,glowC(2.2));const p=onSurf(body,0,1.0);lm.position.copy(p);lm.position.z+=.004;lm.lookAt(p.clone().add(V(0,-.25,1)));inner.add(lm);halo(inner,p.clone().add(V(0,0,.08)),.75,.35);}
+
+// ---------- water: drifting motes, bubbles, his wake, and the pressure rings he pushes ahead of him
+let sd=11;const rn=()=>(sd=(sd*16807)%2147483647)/2147483647;const MOB=innerWidth<760;
+const SNOW=[];for(let i=0;i<(MOB?70:160);i++){const m=new THREE.Sprite(new THREE.SpriteMaterial({map:DT,color:0xcff6fb,transparent:true,opacity:.08+rn()*.3,depthWrite:false,blending:THREE.AdditiveBlending}));
+ m.position.set((rn()-.5)*16,-3+rn()*8,-9+rn()*13);m.scale.setScalar(.02+rn()*.07);m.userData={y0:m.position.y,s:.05+rn()*.12};sc.add(m);SNOW.push(m);}
+const BUBS=[];for(let i=0;i<26;i++){const m=new THREE.Sprite(new THREE.SpriteMaterial({map:BT,transparent:true,opacity:.35+rn()*.4,depthWrite:false}));
+ m.userData={x:(rn()-.5)*11,z:-4+rn()*5,y0:rn()*9,sp:.35+rn()*.4,s:.05+rn()*.1,ph:rn()*6};sc.add(m);BUBS.push(m);}
+const pool=(n,map,add)=>Array.from({length:n},()=>{const m=new THREE.Sprite(new THREE.SpriteMaterial({map,transparent:true,opacity:0,depthWrite:false,blending:add?THREE.AdditiveBlending:THREE.NormalBlending}));
+ m.userData={life:0,v:V(0,0,0),s:1};m.visible=false;sc.add(m);return m;});
+const WAKE=pool(MOB?46:80,BT),MIST=pool(MOB?16:28,DT,true);let wi=0,mi=0,wAcc=0,mAcc=0;
+const emit=(P,pos,s,life)=>{const m=P[(P===WAKE?wi++:mi++)%P.length];m.position.copy(pos);m.userData.life=m.userData.L=life;m.userData.s=s;m.visible=true;return m.userData.v;};
+
+// ---------- layout, input, loop
+let REST=V(0,0,0),START=V(0,0,0),CZ=9;
+function size(){const w=hero.clientWidth,h=hero.clientHeight;r.setSize(w,h,false);cam.aspect=w/h;const port=w/h<.8;
+ CZ=port?12.5:7.4;REST=port?V(0,.35,0):V(.1,-.25,0);cam.position.set(0,0,CZ);cam.lookAt(0,0,0);cam.updateProjectionMatrix();
+ const Z=-7,half=Math.tan(15*Math.PI/180)*(CZ-Z)*cam.aspect;START=V(half+1.5,port?2.6:1.5,Z);}   // just off the right edge, further back
+size();addEventListener('resize',size);
+let px=0,py=0,mx=0,my=0,spin=0,spinV=0;
+addEventListener('pointermove',e=>{px=e.clientX/innerWidth*2-1;py=e.clientY/innerHeight*2-1;},{passive:true});
+addEventListener('pointerdown',()=>{if(Math.abs(spinV)<.01)spinV=1;});
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x)),ss=x=>x*x*(3-2*x);
+const IN=still?0:3;let t=0,last=0,ready=0,shown=false,kick=0;
+const prev=V(0,0,0),vel=V(0,0,0),tmp=V(0,0,0);
+const QT=+new URLSearchParams(location.search).get('t');   // ?t=1.5 freezes the intro at 1.5s, for checking
+ORCA.position.copy(START);r.compile(sc,cam);                                          // build the shaders before he moves, not during
+function frame(now){requestAnimationFrame(frame);
+ if(hero.getBoundingClientRect().bottom<0||window.__hp>.64){last=now;return;}       // off screen or faded out: rest
+ const raw=(now-last)/1000;last=now;
+ // the swim only starts once the page has stopped loading and frames are steady, and a slow frame pauses him instead of making him jump
+ if(ready<4){ready=now>4000||(document.readyState==='complete'&&raw<.05)?ready+1:0;if(!QT&&!still)return;}   // slow devices: go anyway after 4s
+ const dt=Math.min(raw,1/30);t=QT||t+dt;
+ const kp=1-Math.exp(-dt*4);mx+=(px-mx)*kp;my+=(py-my)*kp;
+ // one glide, one ease: across and down from the right edge while coming closer, slowing all the way in
+ const k=IN?clamp(t/IN):1,e=1-Math.pow(1-k,4),ez=1-Math.pow(1-k,3),sw=1-e,idle=ss(clamp((k-.55)/.45));
+ const p=tmp.set(START.x+(REST.x-START.x)*e,START.y+(REST.y-START.y)*e-Math.sin(Math.PI*e)*.25,START.z+(REST.z-START.z)*ez);
+ vel.copy(p).sub(prev).divideScalar(Math.max(dt,1e-3));prev.copy(p);
+ ORCA.position.copy(p);ORCA.position.y+=Math.sin(t*1.6)*.07*e;
+ if(spinV){spin+=dt*7;if(spin>=Math.PI*2){spin=0;spinV=0;}}
+ kick+=dt*(2.2+8*sw);                                                              // tail beat slows with him, never skips
+ tilt.rotation.z=.5*sw+Math.sin(t*.9)*.03*e;                                        // leans into the glide, straightens as he arrives
+ tilt.rotation.x=.5*sw+Math.sin(kick)*.035*sw;
+ ORCA.rotation.y=-.45*sw+idle*(mx*.55-.12)+spin;ORCA.rotation.x=idle*my*.22;
+ fl.rotation.x=-.35+Math.sin(kick)*(.2+sw*.3);
+ const wave=ss(clamp((t-IN*.8)/.9));
+ pivL.rotation.set(0,.35,.5+Math.sin(t*2.4)*.1-sw*.9);
+ pivR.rotation.set(0,-.35,-.55+wave*(1.35+Math.sin(t*7)*.28*(t-IN<4?1:.25))+sw*.9*(1-wave));
+ const bl=Math.sin(t*.9)>.985||(t%5.3)<.12;eyes.forEach(o=>o.scale.y=bl?.12:1);
+ bm.userData.U.jaw.value=wave*(.35+.25*Math.sin(t*1.3));
+ // water trail: bubbles and a soft churn shed from the tail, left behind along his path
+ const sp=vel.length();
+ if(sp>.25&&t>.05){const tail=V(p.x,p.y-.9,p.z-.3);
+  wAcc+=dt*Math.min(sp,9)*(MOB?8:13);while(wAcc>1){wAcc--;const q=tail.clone().add(V((rn()-.5)*.8,(rn()-.5)*.9,(rn()-.5)*.6));emit(WAKE,q,.04+rn()*.11,1.6+rn()*1.2).copy(vel).multiplyScalar(.12).add(V((rn()-.5)*.25,.15+rn()*.35,0));}
+  mAcc+=dt*Math.min(sp,9)*1.6;while(mAcc>1){mAcc--;emit(MIST,tail.clone().add(V((rn()-.5)*.4,(rn()-.5)*.5,-.2)),.9+rn()*.9,1.5).copy(vel).multiplyScalar(.08);}}
+ WAKE.forEach(m=>{const d=m.userData;if(d.life<=0)return;d.life-=dt;if(d.life<=0){m.visible=false;return;}const f=d.life/d.L;
+  m.position.addScaledVector(d.v,dt);m.position.x+=Math.sin(t*4+d.s*90)*dt*.1;d.v.multiplyScalar(1-dt*1.2);d.v.y+=dt*.5;
+  m.scale.setScalar(d.s*(1.5-f*.5));m.material.opacity=Math.min(1,f*3)*Math.min(1,(1-f)*8)*.75;});
+ MIST.forEach(m=>{const d=m.userData;if(d.life<=0)return;d.life-=dt;if(d.life<=0){m.visible=false;return;}const f=d.life/d.L;
+  m.position.addScaledVector(d.v,dt);d.v.multiplyScalar(1-dt*1.5);m.scale.setScalar(d.s*(2-f));m.material.opacity=f*Math.min(1,(1-f)*6)*.09;});
+ SNOW.forEach(s=>{const d=s.userData;s.position.y=((d.y0+3+t*d.s)%8)-3;});
+ BUBS.forEach(b=>{const d=b.userData;const y=(d.y0+t*d.sp)%9;b.position.set(d.x+Math.sin(y*2+d.ph)*.12,y-4,d.z);b.scale.setScalar(d.s*(1+y*.04));});
+ cam.position.set(mx*.35,-my*.2,CZ);cam.lookAt(0,0,0);
+ if(!shown&&k>.3){shown=true;hero.classList.add('in');}
+ r.render(sc,cam);}
+requestAnimationFrame(frame);
+</script></body>
 </html>

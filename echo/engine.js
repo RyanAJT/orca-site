@@ -1,4 +1,4 @@
-// Echo Engine hero: a glowing core, one ring with six ports, and one benefit card at a time (three.js + bloom).
+// Echo Engine hero: your brand goes in at the top, the engine core turns it into a week of work that drops out below (three.js + bloom).
 import * as THREE from 'three';
 import {SVGLoader} from 'three/addons/loaders/SVGLoader.js';
 import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
@@ -35,50 +35,59 @@ const shapes=[];new SVGLoader().parse('<svg xmlns="http://www.w3.org/2000/svg"><
 const mg=new THREE.ExtrudeGeometry(shapes,{depth:40,bevelEnabled:true,bevelThickness:6,bevelSize:4,bevelSegments:2,curveSegments:32});mg.center();mg.rotateX(Math.PI);mg.scale(.9/377,.9/377,.9/377);
 const mark=new THREE.Mesh(mg,glow(1.5));ENG.add(mark);
 const shell=new THREE.Mesh(new THREE.SphereGeometry(.95,48,32),new THREE.MeshPhysicalMaterial({color:0x9fe3ef,metalness:0,roughness:.05,transmission:1,thickness:.6,ior:1.3,transparent:true,opacity:.22,envMapIntensity:1.4,depthWrite:false}));ENG.add(shell);
-// one ring, six ports. The ring turns to bring the live port to the front.
-const RR=1.75,RING=new THREE.Group(),TILT=new THREE.Group();TILT.rotation.x=-1.22;ENG.add(TILT);TILT.add(RING);
-RING.add(new THREE.Mesh(new THREE.TorusGeometry(RR,.03,12,180),metal));
-const numTex=n=>{const c=document.createElement('canvas');c.width=c.height=96;const x=c.getContext('2d');x.fillStyle='#eaf8fb';x.font='600 46px "Geist Mono","JetBrains Mono",monospace';x.textAlign='center';x.textBaseline='middle';x.fillText('0'+n,48,50);return new THREE.CanvasTexture(c);};
-const PORTS=[0,1,2,3,4,5].map(k=>{const a=k/6*Math.PI*2,g=new THREE.Group();g.position.set(Math.cos(a)*RR,Math.sin(a)*RR,0);
- g.add(new THREE.Mesh(new THREE.SphereGeometry(.11,20,14),metal));
- const l=new THREE.Mesh(new THREE.SphereGeometry(.06,16,12),glow(1));l.position.z=.08;g.add(l);
- const n=new THREE.Sprite(new THREE.SpriteMaterial({map:numTex(k+1),transparent:true,depthWrite:false,toneMapped:false}));n.position.set(Math.cos(a)*.32,Math.sin(a)*.32,0);n.scale.setScalar(.3);g.add(n);
- RING.add(g);return {g,l,n,on:0};});
-// content cards: little HUD screens in orbit (reel, post, chat, calendar, leads, schedule)
-// benefit cards: what each port gives you, shown one at a time in front of the engine
-const BEN=[
- ['Your week, planned','Reels, posts and stories mapped out every Monday',x=>{x.strokeRect(-17,-13,34,30);x.beginPath();x.moveTo(-17,-3);x.lineTo(17,-3);x.moveTo(-8,-19);x.lineTo(-8,-9);x.moveTo(8,-19);x.lineTo(8,-9);x.stroke();}],
- ['Reels, scripted','Hook, beats, shot list and caption for every reel',x=>{x.beginPath();x.moveTo(-9,-15);x.lineTo(-9,15);x.lineTo(15,0);x.closePath();x.fill();}],
- ['Posts in your voice','Captions and carousels that sound like you',x=>{x.beginPath();[-12,0,12].forEach((y,i)=>{x.moveTo(-17,y);x.lineTo(i==2?5:17,y);});x.stroke();}],
- ['Comments become leads','A keyword comment sends your link by DM',x=>{x.beginPath();x.roundRect(-18,-15,36,25,8);x.stroke();x.beginPath();x.moveTo(-6,10);x.lineTo(-10,19);x.lineTo(3,10);x.fill();}],
- ['An always-on front desk','Your WhatsApp or Telegram assistant, scripted',x=>{x.beginPath();x.arc(0,0,17,0,7);x.moveTo(0,-9);x.lineTo(0,1);x.lineTo(8,6);x.stroke();}],
- ['One brand kit','Your voice, offers and audience, written once',x=>{x.beginPath();x.moveTo(0,-18);x.lineTo(17,-7);x.lineTo(0,4);x.lineTo(-17,-7);x.closePath();x.moveTo(-17,3);x.lineTo(0,14);x.lineTo(17,3);x.stroke();}]];
-function card([title,sub,icon],i){const c=document.createElement('canvas');c.width=640;c.height=340;const x=c.getContext('2d');
- const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;
- const draw=()=>{x.clearRect(0,0,640,340);const g=x.createLinearGradient(0,0,640,340);g.addColorStop(0,'rgba(16,62,74,.98)');g.addColorStop(1,'rgba(4,22,28,.98)');
-  x.fillStyle=g;x.beginPath();x.roundRect(5,5,630,330,40);x.fill();x.strokeStyle='rgba(169,225,236,.75)';x.lineWidth=3;x.stroke();
-  x.fillStyle='#a9e1ec';x.beginPath();x.arc(78,84,44,0,7);x.fill();
-  x.save();x.translate(78,84);x.fillStyle=x.strokeStyle='#04161b';x.lineWidth=5;x.lineCap=x.lineJoin='round';icon(x);x.restore();
-  x.fillStyle='rgba(169,225,236,.7)';x.font='500 24px "Geist Mono",monospace';x.textAlign='right';x.fillText('0'+(i+1)+' / 06',600,62);x.textAlign='left';
-  x.fillStyle='#f2f7f9';let fs=56;do{x.font='600 '+fs+'px Geist,"Inter Tight",system-ui,sans-serif';}while(x.measureText(title).width>570&&--fs>30);x.fillText(title,36,200);
-  x.fillStyle='#c2dde3';x.font='400 31px Geist,"Inter Tight",system-ui,sans-serif';const w=sub.split(' ');let l='',y=250;
-  w.forEach(s=>{if(x.measureText(l+s).width>570){x.fillText(l,36,y);l='';y+=40;}l+=s+' ';});x.fillText(l,36,y);t.needsUpdate=true;};
- draw();document.fonts&&document.fonts.ready.then(draw);
- return new THREE.Mesh(new THREE.PlaneGeometry(1.5,.8),new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,toneMapped:false}));}
-const CARDS=BEN.map((b,i)=>{const m=card(b,i);m.material.opacity=0;m.renderOrder=5;m.material.depthTest=false;RIG.add(m);return m;});
-// one spark runs from the live port into the core
-const spark=new THREE.Mesh(new THREE.SphereGeometry(.04,10,8),glow(3));RIG.add(spark);const wp=new THREE.Vector3();
-// halo rings above and below, and the dock under the engine
-function bubbleRing(R,n){const g=new THREE.Group();for(let i=0;i<n;i++){const a=i/n*Math.PI*2+rn()*.08,rr=R+(rn()-.5)*.3,big=rn()>.8;
-  const m=new THREE.Sprite(new THREE.SpriteMaterial({map:BT,transparent:true,opacity:.45+rn()*.5,depthWrite:false}));m.position.set(Math.cos(a)*rr,(rn()-.5)*.22,Math.sin(a)*rr);m.scale.setScalar(big?.13+rn()*.07:.04+rn()*.06);g.add(m);}
- sc.add(g);return g;}
-const haloT=bubbleRing(3.3,110);haloT.position.y=3.1;const haloB=bubbleRing(2.25,80);haloB.position.y=-2.05;
-const dock=new THREE.Group();dock.position.y=-2.0;sc.add(dock);
-{const d1=new THREE.Mesh(new THREE.CylinderGeometry(1.25,.9,.5,6),metal);dock.add(d1);
- const d2=new THREE.Mesh(new THREE.CylinderGeometry(.75,1.15,.22,6),metal);d2.position.y=.36;dock.add(d2);
+// a lit ring around the core so it reads as a machine
+const band=new THREE.Mesh(new THREE.TorusGeometry(1.18,.035,12,140),metal);band.rotation.x=1.25;ENG.add(band);
+const bandLit=new THREE.Mesh(new THREE.TorusGeometry(1.181,.037,8,60,Math.PI*.5),glow(2));bandLit.rotation.x=1.25;ENG.add(bandLit);
 
- const beam=new THREE.Mesh(new THREE.CylinderGeometry(.5,.16,1.1,24,1,true),new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.DoubleSide,
-  vertexShader:'varying vec2 u;void main(){u=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying vec2 u;void main(){gl_FragColor=vec4(.5,.9,.97,(1.-u.y)*.18);}'}));beam.position.y=1.05;dock.add(beam);}
+// ---------- 3D cards: a rounded slab with a printed face
+const ICONS={
+ brand:x=>{x.beginPath();x.moveTo(0,-18);x.lineTo(17,-7);x.lineTo(0,4);x.lineTo(-17,-7);x.closePath();x.moveTo(-17,3);x.lineTo(0,14);x.lineTo(17,3);x.stroke();},
+ plan:x=>{x.strokeRect(-17,-13,34,30);x.beginPath();x.moveTo(-17,-3);x.lineTo(17,-3);x.moveTo(-8,-19);x.lineTo(-8,-9);x.moveTo(8,-19);x.lineTo(8,-9);x.stroke();},
+ reel:x=>{x.beginPath();x.moveTo(-9,-15);x.lineTo(-9,15);x.lineTo(15,0);x.closePath();x.fill();},
+ post:x=>{x.beginPath();[-12,0,12].forEach((y,i)=>{x.moveTo(-17,y);x.lineTo(i==2?5:17,y);});x.stroke();},
+ lead:x=>{x.beginPath();x.roundRect(-18,-15,36,25,8);x.stroke();x.beginPath();x.moveTo(-6,10);x.lineTo(-10,19);x.lineTo(3,10);x.fill();}};
+function slab(w,h,draw,light){
+ const c=document.createElement('canvas');c.width=Math.round(w*360);c.height=Math.round(h*360);const x=c.getContext('2d');
+ const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;
+ const paint=()=>{x.clearRect(0,0,c.width,c.height);const g=x.createLinearGradient(0,0,0,c.height);
+  if(light){g.addColorStop(0,'#eafaff');g.addColorStop(1,'#b6e6ef');}else{g.addColorStop(0,'#123f4b');g.addColorStop(1,'#061c23');}
+  x.fillStyle=g;x.fillRect(0,0,c.width,c.height);x.strokeStyle=light?'rgba(255,255,255,.9)':'rgba(169,225,236,.55)';x.lineWidth=6;x.strokeRect(3,3,c.width-6,c.height-6);
+  draw(x,c.width,c.height,light);t.needsUpdate=true;};
+ paint();document.fonts&&document.fonts.ready.then(paint);
+ const s=new THREE.Shape(),r=.12;s.moveTo(-w/2+r,-h/2);s.lineTo(w/2-r,-h/2);s.quadraticCurveTo(w/2,-h/2,w/2,-h/2+r);s.lineTo(w/2,h/2-r);s.quadraticCurveTo(w/2,h/2,w/2-r,h/2);
+ s.lineTo(-w/2+r,h/2);s.quadraticCurveTo(-w/2,h/2,-w/2,h/2-r);s.lineTo(-w/2,-h/2+r);s.quadraticCurveTo(-w/2,-h/2,-w/2+r,-h/2);
+ const geo=new THREE.ExtrudeGeometry(s,{depth:.07,bevelEnabled:true,bevelThickness:.02,bevelSize:.02,bevelSegments:2,curveSegments:8});geo.translate(0,0,-.035);
+ t.repeat.set(1/w,1/h);t.offset.set(.5,.5);
+ const face=new THREE.MeshBasicMaterial({map:t,toneMapped:false,transparent:true}),side=new THREE.MeshPhysicalMaterial({color:light?0xbfe9f1:0x0d2f38,metalness:.6,roughness:.3,clearcoat:1,envMapIntensity:1.2,transparent:true});
+ const m=new THREE.Mesh(geo,[face,side]);m.userData.mats=[face,side];return m;}
+const SANS='Geist,"Inter Tight",system-ui,sans-serif',MONO='"Geist Mono","JetBrains Mono",monospace';
+function face(icon,label,title,sub){return (x,W,H,light)=>{const ink=light?'#04161b':'#f2f7f9',k=H/360;
+ x.fillStyle=light?'#04161b':'#3fd0e0';x.beginPath();x.arc(70*k,70*k,40*k,0,7);x.fill();
+ x.save();x.translate(70*k,70*k);x.scale(k,k);x.fillStyle=x.strokeStyle=light?'#3fd0e0':'#04161b';x.lineWidth=5;x.lineCap=x.lineJoin='round';ICONS[icon](x);x.restore();
+ x.fillStyle=light?'#1d6c7c':'#7fd6e3';x.font=`500 ${22*k}px ${MONO}`;x.textAlign='left';x.fillText(label,128*k,62*k);
+ x.fillStyle=ink;let fs=48*k;do{x.font=`700 ${fs}px ${SANS}`;}while(x.measureText(title).width>W-60*k&&(fs-=2)>20);x.fillText(title,32*k,170*k);
+ x.fillStyle=light?'#24525f':'#b5d6dd';x.font=`400 ${28*k}px ${SANS}`;const w=sub.split(' ');let l='',y=222*k;
+ w.forEach(s=>{if(x.measureText(l+s).width>W-64*k){x.fillText(l,32*k,y);l='';y+=36*k;}l+=s+' ';});x.fillText(l,32*k,y);};}
+
+// in: your brand. out: four kinds of finished work.
+const IN=slab(1.9,.62,(x,W,H)=>{const k=H/223;x.strokeStyle='rgba(63,208,224,.9)';x.lineWidth=8;x.strokeRect(4,4,W-8,H-8);
+ x.fillStyle='#3fd0e0';x.beginPath();x.arc(80*k,H/2,46*k,0,7);x.fill();x.save();x.translate(80*k,H/2);x.scale(1.15*k,1.15*k);x.strokeStyle='#04161b';x.lineWidth=5;x.lineCap=x.lineJoin='round';ICONS.brand(x);x.restore();
+ x.fillStyle='#f2f7f9';x.font=`700 ${62*k}px ${SANS}`;x.fillText('Your brand',150*k,104*k);x.fillStyle='#9fd9e4';x.font=`400 ${31*k}px ${SANS}`;x.fillText('Voice · offers · customers',152*k,154*k);});RIG.add(IN);
+const OUT=[['plan','EVERY MONDAY','A week planned','Reels, posts and stories mapped'],['reel','EVERY REEL','Reel scripts','Hook, beats and caption'],
+ ['post','EVERY POST','Posts in your voice','Captions and carousels'],['lead','EVERY COMMENT','DMs that sell','Comments turned into leads']]
+ .map(o=>{const m=slab(1.7,1.0,face(...o));RIG.add(m);return m;});
+const LBL=(txt)=>{const c=document.createElement('canvas');c.width=512;c.height=64;const x=c.getContext('2d');x.font=`500 30px ${MONO}`;x.fillStyle='#7fe3f0';x.textAlign='center';x.fillText(txt,256,42);
+ const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;const s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,depthWrite:false,toneMapped:false}));s.scale.set(2.4,.3,1);RIG.add(s);return s;};
+const LIN=LBL('IN'),LOUT=LBL('OUT · EVERY WEEK');
+// stream of light from the brand card into the core, and from the core to each output
+const DOTS=[...Array(phone?26:44)].map(()=>{const m=new THREE.Sprite(new THREE.SpriteMaterial({map:DT,color:0xbff4fb,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));m.userData={k:rn(),lane:-1};RIG.add(m);return m;});
+DOTS.forEach((d,i)=>d.userData.lane=i%5-1);   // -1: in, 0..3: outputs
+
+// layout per orientation: where the input, core and outputs sit
+let L={};function layout(port){L=port?{inY:1.6,inS:.78,core:.7,coreS:.4,out:[[-.86,-.55],[.86,-.55],[-.86,-1.5],[.86,-1.5]],outS:.94,lIn:9,lOut:.08,lS:.7}
+ :{inY:1.8,inS:.85,core:.45,coreS:.55,out:[[-.88,-1.0],[.88,-1.0],[-.88,-2.02],[.88,-2.02]],outS:.95,lIn:2.24,lOut:-.37,lS:.85};LIN.scale.set(2.4*L.lS,.3*L.lS,1);LOUT.scale.set(2.4*L.lS,.3*L.lS,1);
+ ENG.position.y=L.core;ENG.scale.setScalar(L.coreS);LIN.position.set(0,L.lIn,0);LOUT.position.set(0,L.lOut,0);}
+const qv=new THREE.Vector3(),qa=new THREE.Vector3(),qb=new THREE.Vector3();
 // light shaft from the surface
 const shaft=new THREE.Mesh(new THREE.PlaneGeometry(7,13),new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{t:{value:0}},
  vertexShader:'varying vec2 u;void main(){u=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
@@ -89,26 +98,30 @@ const BITS=[];for(let i=0;i<(phone?70:150);i++){const b=i%4==0;const m=new THREE
  m.userData={x:(rn()-.5)*16,z:-8+rn()*12,y0:rn()*12,sp:(b?.3:.06)+rn()*.2,ph:rn()*6};m.scale.setScalar(b?.06+rn()*.1:.03+rn()*.06);sc.add(m);BITS.push(m);}
 
 // ---------- render
-const comp=new EffectComposer(r);comp.addPass(new RenderPass(sc,cam));const bloom=new UnrealBloomPass(new THREE.Vector2(256,256),.38,.5,.92);comp.addPass(bloom);comp.addPass(new OutputPass());
-let CZ=11,PORT=false;const BOX=cv.parentElement;function size(){const w=BOX.clientWidth,h=BOX.clientHeight;r.setSize(w,h,false);comp.setSize(w,h);cam.aspect=w/h;PORT=w/h<.8;CZ=PORT?18.5:10.5;
- haloT.scale.setScalar(PORT?.5:1);haloT.position.y=PORT?2.3:3.1;haloB.scale.setScalar(PORT?.7:1);TILT.scale.setScalar(PORT?1:.86);cam.updateProjectionMatrix();}
+const comp=new EffectComposer(r);comp.addPass(new RenderPass(sc,cam));const bloom=new UnrealBloomPass(new THREE.Vector2(256,256),.34,.5,.92);comp.addPass(bloom);comp.addPass(new OutputPass());
+let CZ=11,PORT=false;const BOX=cv.parentElement;function size(){const w=BOX.clientWidth,h=BOX.clientHeight;r.setSize(w,h,false);comp.setSize(w,h);cam.aspect=w/h;PORT=w/h<.8;CZ=PORT?13.2:9.6;layout(PORT);cam.updateProjectionMatrix();}
 size();addEventListener('resize',size);
-let px=0,py=0,mx=0,my=0,spin=-Math.PI/2,last=0;const HOLD=3.2;addEventListener('pointermove',e=>{px=e.clientX/innerWidth*2-1;py=e.clientY/innerHeight*2-1;},{passive:true});
+let px=0,py=0,mx=0,my=0;addEventListener('pointermove',e=>{px=e.clientX/innerWidth*2-1;py=e.clientY/innerHeight*2-1;},{passive:true});
 const QT=+new URLSearchParams(location.search).get('t');let T0=0;
+const ease=x=>1-Math.pow(1-Math.min(1,Math.max(0,x)),3),CYC=7.5;
 function frame(now){if(BOX.getBoundingClientRect().bottom<0)return requestAnimationFrame(frame);if(!T0)T0=now;const t=QT||(now-T0)/1000;mx+=(px-mx)*.05;my+=(py-my)*.05;
- const rise=1-Math.pow(1-Math.min(1,t/2.2),3);                       // the engine rises off its dock on load
- RIG.position.y=-1.6+rise*1.75+Math.sin(t*.8)*.08;RIG.scale.setScalar(.6+.4*rise);
- RIG.rotation.y=mx*.6;RIG.rotation.x=my*.3;                           // the whole engine turns to the cursor
- mark.lookAt(cam.position);
- const dt=Math.min(.05,(now-last)/1000||0);last=now;
- const step=Math.max(0,Math.floor((t-1.6)/HOLD)),live=step%6;                    // which port is live
- spin+=(-Math.PI/2-step*Math.PI/3-spin)*(QT?1:1-Math.exp(-dt*3.2));RING.rotation.z=spin;   // bring it to the front
- PORTS.forEach((p,i)=>{p.on+=((i==live)-p.on)*(QT?1:1-Math.exp(-dt*5));p.l.material.color.copy(ICE).multiplyScalar(.45+2.6*p.on);p.l.scale.setScalar(1+p.on*.9);p.g.scale.setScalar(1+p.on*.35);p.n.material.opacity=.35+.65*p.on;});
- CARDS.forEach((m,i)=>{const o=PORTS[i].on;m.visible=o>.01;m.material.opacity=o*o;m.position.set(0,(PORT?-1.75:-1.5)-(1-o)*.18,2.1);m.quaternion.copy(cam.quaternion);m.scale.setScalar(PORT?1.75:1.2);});
- PORTS[live].g.getWorldPosition(wp);RIG.worldToLocal(wp);const k=(t*.7)%1;spark.position.copy(wp).multiplyScalar(1-k);spark.scale.setScalar(Math.sin(k*Math.PI)*1.5+.01);
- haloT.rotation.set(-.21+my*.06,t*.07,0);haloB.rotation.set(-.15,-t*.1,0);haloT.position.x=-mx*.4;haloB.position.x=mx*.25;
- dock.rotation.y=t*.1+mx*.3;shaft.material.uniforms.t.value=t;
+ RIG.rotation.y=mx*.35;RIG.rotation.x=my*.15;                       // the whole flow tilts toward the cursor
+ mark.lookAt(cam.position);shell.rotation.y=t*.2;bandLit.rotation.z=-t*1.6;
+ // the cycle: brand card drops in, the core works, the four outputs pop out one by one, hold, then fade and repeat
+ const c=t%CYC,run=t>=.4;
+ const inK=ease((c-.0)/.7);IN.position.set(Math.sin(t*.8)*.03,L.inY+(1-inK)*.6,0);IN.scale.setScalar(L.inS);IN.userData.mats.forEach(m=>m.opacity=inK);
+ const work=c>.9&&c<5.2;ENG.rotation.y=Math.sin(t*.5)*.25;mark.material.color.copy(ICE).multiplyScalar(work?1.5+.5*Math.sin(t*9):1.3);
+ const fade=1-ease((c-6.4)/.8);
+ OUT.forEach((m,i)=>{const k=run?ease((c-1.2-i*.7)/.7):1,[ox,oy]=L.out[i];
+  m.position.set(ox*k,L.core+(oy-L.core)*k+Math.sin(t*1.1+i)*.03*k,(1-k)*.4);m.rotation.set(0,(1-k)*.6*(ox<0?-1:1),(1-k)*.4*(ox<0?1:-1));
+  m.scale.setScalar(L.outS*(.35+.65*k));m.userData.mats.forEach(q=>q.opacity=Math.min(k*1.4,1)*fade);});
+ IN.userData.mats.forEach(m=>m.opacity*=fade);LIN.material.opacity=fade;LOUT.material.opacity=ease((c-1.4)/.6)*fade;
+ // streams: dots run down from the brand card into the core, then out along each lane
+ DOTS.forEach(d=>{const u=d.userData,k=(u.k+t*(u.lane<0?.55:.45))%1;
+  if(u.lane<0){qa.set(0,L.inY-.45*L.inS,0);qb.set(0,L.core+.6*L.coreS,0);}else{qa.set(0,L.core,0);qb.set(L.out[u.lane][0],L.out[u.lane][1]+.5*L.outS,0);}
+  d.position.lerpVectors(qa,qb,k);d.scale.setScalar((.05+.07*Math.sin(k*Math.PI))*(u.lane<0?1:.9));d.material.opacity=Math.sin(k*Math.PI)*(work||u.lane<0?.9:.25)*fade;});
  BITS.forEach(b=>{const d=b.userData,y=(d.y0+t*d.sp)%12;b.position.set(d.x+Math.sin(y+d.ph)*.15,y-6,d.z);});
- cam.position.set(mx*.9,.35-my*.5,CZ);cam.lookAt(0,PORT?.15:-.15,0);
+ shaft.material.uniforms.t.value=t;
+ cam.position.set(mx*.6,.2-my*.3,CZ);cam.lookAt(0,PORT?.2:.1,0);
  comp.render();(still&&t>3)||requestAnimationFrame(frame);}
 requestAnimationFrame(frame);

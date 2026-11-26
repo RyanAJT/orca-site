@@ -55,6 +55,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .talk.solid{background:var(--foam);color:var(--abyss);border-color:var(--foam);padding:14px 24px;font-size:15px}
 .talk.solid:hover{background:var(--ice)}
 /* ponytail: review-only type switcher, delete once a pairing is picked */
+.wbtns{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.menu{display:none;padding:8px 14px;border-radius:999px;font-size:12px;color:inherit;background:rgba(6,20,26,.6);border:1px solid rgba(169,225,236,.25);cursor:pointer}
 .typer{padding:8px 12px;border-radius:999px;background:rgba(6,20,26,.6);border:1px solid rgba(169,225,236,.25)}
 .typer:hover{border-color:var(--ice)}
 
@@ -214,6 +216,7 @@ main{position:relative;z-index:2}
 .tier .for{color:var(--mist);font-size:14.5px;margin-top:-8px}
 .price{font-family:var(--disp);font-weight:300;font-size:clamp(2.6rem,3.6vw,3.6rem);letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums;margin-top:10px}
 .price small{font-size:.32em;letter-spacing:0;color:var(--mist);margin-left:4px}
+.price s{position:relative;display:inline-block;text-decoration:none;font-size:.6em;font-weight:500;opacity:.8;margin-right:.3em;letter-spacing:-.02em}.price s::after{content:"";position:absolute;left:-10%;right:-10%;top:50%;height:.13em;border-radius:9px;background:#ff4d5e;transform:rotate(-16deg)}
 .note{color:var(--mist);margin-top:-6px}
 .tier ul{list-style:none;display:grid;gap:9px;padding:16px 0;border-top:1px solid rgba(169,225,236,.14);font-size:14.5px;flex:1}
 .tier li{display:flex;gap:10px;align-items:baseline}
@@ -238,6 +241,10 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
 @media (max-width:900px){
   .nav nav,.nav .clock,.typer{display:none}
   .nav{grid-template-columns:1fr auto;padding:14px 16px}
+  .nav .r{gap:8px}.menu{display:inline-block}
+  .nav.open nav{display:flex;flex-direction:column;gap:0;position:absolute;top:calc(100% - 4px);left:12px;right:12px;padding:6px;border-radius:18px;background:rgba(6,20,26,.94);border:1px solid rgba(169,225,236,.22);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+  .nav.open nav a{opacity:1;padding:15px 14px;font-size:13px;border-bottom:1px solid rgba(169,225,236,.1)}.nav.open nav a:last-child{border:0}
+  footer{padding-bottom:120px}
   .nav .talk{padding:8px 14px;font-size:13px}
   .ch{min-height:auto}
   .stick{position:relative;min-height:100vh;min-height:100svh;padding-top:40svh}
@@ -301,9 +308,10 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
 <div class="veil"></div>
 
 <header class="nav">
-  <a href="#top" id="logo" aria-label="Orca Agentics, back to top"></a>
-  <nav class="mono" aria-label="Main"><a href="#ways">Echo Engine</a><a href="#loop">How it works</a><a href="#maps">Industries</a><a href="#plans">Plans</a></nav>
+  <a href="/" id="logo" aria-label="Orca Agentics home"></a>
+  <nav class="mono" id="mainnav" aria-label="Main"><a href="#ways">Echo Engine</a><a href="#loop">How it works</a><a href="#maps">Industries</a><a href="#plans">Plans</a></nav>
   <div class="r">
+    <button class="menu mono" type="button" aria-expanded="false" aria-controls="mainnav">Menu</button>
     <button class="typer mono" data-typer>Type A · Geist</button>
     <span class="mono clock">KL <span data-clock>--:--</span></span>
     <a class="talk" href="https://wa.me/601154403886?text=Hi%20Orca%2C%20I%20would%20like%20an%20AI%20content%20engine%20for%20my%20brand.">Let's talk <span aria-hidden="true">&#8627;</span></a>
@@ -336,8 +344,8 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
           <div class="top"><span class="badge" data-orca><i>&#10003;</i></span><h3>Get the Echo Engine</h3><span class="pill">Early access &middot; 68% off</span></div>
           <div class="price"><s>$309</s>$99<small>/mo</small></div>
           <p><b>Plugs straight into your own AI account.</b> You get the full Echo Engine and an A-to-Z setup guide. It plans your week, writes your reels, posts and DM flows, and scripts your WhatsApp or Telegram assistant, all in your brand voice.</p>
-          <ul><li>The full system, A to Z</li><li>24/7 support and 1:1 guidance</li><li>7-day free trial · runs on your own AI plan (paid separately)</li></ul>
-          <a class="talk solid" href="https://orcaagentics.xyz/echo/">Get access <span aria-hidden="true">&#8627;</span></a>
+          <ul><li>The full system, A to Z</li><li>24/7 support and 1:1 guidance</li><li>Runs on your own AI plan (paid separately)</li></ul>
+          <div class="wbtns"><a class="talk solid" href="https://orcaagentics.xyz/echo/">Get access <span aria-hidden="true">&#8627;</span></a><a class="talk" href="https://orcaagentics.xyz/echo/#inside">View the engine <span aria-hidden="true">&#8594;</span></a></div>
         </article>
         <article class="card glass way">
           <div class="top"><span class="badge" data-team></span><h3>Let us run it</h3></div>
@@ -423,7 +431,7 @@ footer{position:relative;z-index:2;display:flex;justify-content:space-between;ga
         <div>
           <div class="top"><h3>Echo Engine</h3><span class="pill">Early access &middot; 68% off</span></div>
           <div class="price"><s>$309</s>$99<small>/mo</small></div>
-          <p class="for"><b>Plugs straight into your own AI account.</b> The full system with an A-to-Z setup guide. You run it, in your brand voice. 7-day free trial.</p>
+          <p class="for"><b>Plugs straight into your own AI account.</b> The full system with an A-to-Z setup guide. You run it, in your brand voice.</p>
         </div>
         <div>
           <ul><li>Full system and A-to-Z setup guide</li><li>Plans your week, writes your reels, posts and captions</li><li>DM flows and your WhatsApp or Telegram assistant script</li><li>24/7 support on WhatsApp and Telegram, plus 1:1 guidance</li><li>Runs on your own AI plan (paid separately)</li></ul>
@@ -670,7 +678,7 @@ let cur=0,vel=0,mx=0,my=0,cmx=0,cmy=0;
 addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5;});
 function resize(){const w=innerWidth,h=innerHeight,t=clamp((h/w-1.78)/.38);P[0]=[0,9.4-.8*t,.72+.28*t,1];/* hero orb: big and high on tall phones, smaller on short ones so it clears the text */renderer.setSize(w,h,false);camera.aspect=w/h;camera.fov=w/h<1?58:38;camera.updateProjectionMatrix();measure();}
 addEventListener('resize',resize);resize();addEventListener('load',measure);
-let lenis=null;if(!reduce&&window.Lenis){lenis=new Lenis({lerp:.085,wheelMultiplier:.9});lenis.on('scroll',e=>vel=e.velocity);}
+let lenis=null;if(!reduce&&window.Lenis){lenis=window.__lenis=new Lenis({lerp:.085,wheelMultiplier:.9});lenis.on('scroll',e=>vel=e.velocity);}
 const look=new THREE.Vector3(),clock=new THREE.Clock(),N=D.length-1;
 const SWIM=$('#swim'),WO=$('#swim .wo svg'),SYMR=2.1875;   // SYMR: radius of the mark inside the orb
 const CR={l:0,t:0,w:1,h:1},toWorld=(x,y,o)=>{o.set((x-CR.l)/CR.w*2-1,1-(y-CR.t)/CR.h*2,.5).unproject(camera).sub(camera.position);return o.multiplyScalar(-camera.position.z/o.z).add(camera.position);};
@@ -854,5 +862,11 @@ function frame(now){requestAnimationFrame(frame);
  if(!shown&&k>.3){shown=true;hero.classList.add('in');}
  r.render(sc,cam);}
 requestAnimationFrame(frame);
-</script></body>
+</script><script>document.getElementById('logo').addEventListener('click',e=>{if(location.pathname!=='/'&&location.pathname!=='/index.html')return;e.preventDefault();
+ history.replaceState(null,'','/');window.__lenis?window.__lenis.scrollTo(0):scrollTo({top:0,behavior:'smooth'});});</script>
+<script>{const n=document.querySelector('.nav'),b=n.querySelector('.menu'),set=o=>{n.classList.toggle('open',o);b.setAttribute('aria-expanded',o);b.textContent=o?'Close':'Menu';};
+b.addEventListener('click',e=>{e.stopPropagation();set(!n.classList.contains('open'));});
+n.querySelectorAll('nav a').forEach(a=>a.addEventListener('click',()=>set(false)));
+addEventListener('click',e=>{if(!n.contains(e.target))set(false);});addEventListener('keydown',e=>{if(e.key==='Escape')set(false);});}</script>
+</body>
 </html>

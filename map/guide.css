@@ -51,7 +51,7 @@ body>.w{position:relative;z-index:1;text-shadow:0 1px 14px rgba(3,10,13,.85)}
 .opt h3{font:800 26px/1.1 IT;letter-spacing:-.015em}
 .opt p{color:var(--dim);font-size:15.5px}.opt.hot p{color:#24525f}
 .opt .price{font:800 52px/1 IT;letter-spacing:-.025em}.opt .price s,.opt .price small{letter-spacing:0}
-.opt .price s{font-size:.38em;font-weight:500;color:#3d6b77;margin-right:10px}
+.opt .price s{position:relative;display:inline-block;text-decoration:none;font-size:.56em;font-weight:700;color:#3d6b77;margin-right:14px}.opt .price s::after{content:"";position:absolute;left:-10%;right:-10%;top:48%;height:.14em;border-radius:9px;background:#ff4d5e;transform:rotate(-16deg);box-shadow:0 0 0 2px rgba(255,255,255,.35)}
 .opt .price small{font-size:.32em;font-weight:500;color:#24525f;margin-left:4px}
 .opt .btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 22px;border-radius:99px;font:700 15px IT;text-decoration:none;
